@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CAz-1L-sqo">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="WeX-eI-S8N">
+            <objects>
+                <viewController id="zBB-Da-CaL" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="crz-60-M40"/>
+                        <viewControllerLayoutGuide type="bottom" id="ub8-dw-u87"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Jaj-f2-etG">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h6e-xW-Ym2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-69" y="248"/>
+        </scene>
+        <!--Contacts-->
+        <scene sceneID="KtM-2h-v2T">
+            <objects>
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="2mx-zD-BBk" customClass="ContactsController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" id="bDM-6e-hYK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Contact" id="Z05-zz-1Pw">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z05-zz-1Pw" id="OgJ-dH-PS8">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DY9-qW-6pw">
+                                            <rect key="frame" x="8" y="19" width="584" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="zBB-Da-CaL" kind="showDetail" id="WeU-ha-ydH"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="2mx-zD-BBk" id="JiC-H3-WDN"/>
+                            <outlet property="delegate" destination="2mx-zD-BBk" id="hjN-er-PtZ"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Contacts" id="bAI-l8-hYv"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ojs-ml-G8A" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="620" y="-494"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="QyD-Sf-GeR">
+            <objects>
+                <navigationController id="9fW-o1-m7g" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="nQd-dw-gEg">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="2mx-zD-BBk" kind="relationship" relationship="rootViewController" id="fkR-SZ-7rQ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="erC-Ti-EgN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-69" y="-494"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="KSa-d0-5Ky">
+            <objects>
+                <splitViewController id="CAz-1L-sqo" sceneMemberID="viewController">
+                    <connections>
+                        <segue destination="9fW-o1-m7g" kind="relationship" relationship="masterViewController" id="BWX-FG-RfT"/>
+                        <segue destination="zBB-Da-CaL" kind="relationship" relationship="detailViewController" id="wwo-oh-gsw"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c39-SV-MUM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-889" y="-163"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="wwo-oh-gsw"/>
+    </inferredMetricsTieBreakers>
+</document>
