@@ -21,6 +21,8 @@ NSString * const kAppServiceType = @"iNearApp";
 @property (strong, nonatomic) MCNearbyServiceBrowser* browser;
 @property (strong, nonatomic) MCNearbyServiceAdvertiser* advertiser;
 
+- (IBAction)showProfile:(id)sender;
+
 @end
 
 @implementation ContactsController
@@ -36,9 +38,6 @@ NSString * const kAppServiceType = @"iNearApp";
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     _peers = [NSMutableArray new];
-    if (![self openSession:[[NSUserDefaults standardUserDefaults] objectForKey:kNSDefaultDisplayNameKey]]) {
-        [self performSegueWithIdentifier:@"CreateProfile" sender:self];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -46,6 +45,10 @@ NSString * const kAppServiceType = @"iNearApp";
     if (_session) {
         [_browser startBrowsingForPeers];
         [_advertiser startAdvertisingPeer];
+    } else {
+        if (![self openSession:[[NSUserDefaults standardUserDefaults] objectForKey:kNSDefaultDisplayNameKey]]) {
+            [self performSegueWithIdentifier:@"CreateProfile" sender:self];
+        }
     }
 }
 
@@ -55,6 +58,11 @@ NSString * const kAppServiceType = @"iNearApp";
         [_browser stopBrowsingForPeers];
         [_advertiser stopAdvertisingPeer];
     }
+}
+
+- (IBAction)showProfile:(id)sender
+{
+    [self performSegueWithIdentifier:@"CreateProfile" sender:self];
 }
 
 - (BOOL)openSession:(NSString*)displayName
@@ -242,5 +250,4 @@ NSString * const kAppServiceType = @"iNearApp";
 {
     
 }
-
 @end

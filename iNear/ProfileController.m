@@ -10,11 +10,15 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CommonCrypto/CommonDigest.h>
 
-@interface ProfileController ()
+@interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *displayNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *lastNameTextField;
+@property (weak, nonatomic) IBOutlet UIImageView *profileImage;
 
 - (IBAction)done:(id)sender;
+- (IBAction)takePhoto:(id)sender;
 
 @end
 
@@ -48,6 +52,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSData* imageData = [[NSUserDefaults standardUserDefaults] objectForKey:@"profileImage"];
+    if (imageData) {
+        self.profileImage.image = [UIImage imageWithData:imageData];
+        self.profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
+        self.profileImage.clipsToBounds = YES;
+    }
+    self.displayNameTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"displayNameKey"];
 }
 
 - (BOOL)isDisplayNameAndServiceTypeValid
@@ -57,7 +68,12 @@
         peerID = [[MCPeerID alloc] initWithDisplayName:self.displayNameTextField.text];
     }
     @catch (NSException *exception) {
-        NSLog(@"Invalid display name [%@]", self.displayNameTextField.text);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[NSString stringWithFormat:@"Invalid display name '%@'", self.displayNameTextField.text]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+
         return NO;
     }
     
@@ -82,6 +98,68 @@
     } else {
         
     }
+}
+
+- (IBAction)takePhoto:(id)sender
+{
+    // Preset an action sheet which enables the user to take a new picture or select and existing one.
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"  destructiveButtonTitle:nil otherButtonTitles:@"Take Photo", @"Choose Existing", nil];
+    
+    // Show the action sheet
+    [sheet showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    
+    if (imagePicker) {
+        // set the delegate and source type, and present the image picker
+        imagePicker.delegate = self;
+        if (0 == buttonIndex) {
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            } else {
+                // Problem with camera, alert user
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Camera" message:@"Please use a camera enabled device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+                return;
+            }
+        }
+        else if (1 == buttonIndex) {
+            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        }
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }
+}
+
+#pragma mark - UIImagePickerViewControllerDelegate
+
+// For responding to the user tapping Cancel.
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+// Override this delegate method to get the image that the user has selected and send it view Multipeer Connectivity to the connected peers.
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    // Don't block the UI when writing the image to documents
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        // We only handle a still image
+        UIImage *imageToSave = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
+        // Save the new image to the documents directory
+        NSData *pngData = UIImageJPEGRepresentation(imageToSave, 1.0);
+        [[NSUserDefaults standardUserDefaults] setObject:pngData forKey:@"profileImage"];
+        // Add the transcript to the data source and reload
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.profileImage.image  = imageToSave;
+            self.profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
+            self.profileImage.clipsToBounds = YES;
+        });
+    });
 }
 
 @end
