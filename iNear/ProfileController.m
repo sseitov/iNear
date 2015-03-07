@@ -10,7 +10,10 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CommonCrypto/CommonDigest.h>
 
-@interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate>
+{
+    UITextField * activeTextField;
+}
 
 @property (weak, nonatomic) IBOutlet UITextField *displayNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
@@ -58,7 +61,42 @@
         self.profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
         self.profileImage.clipsToBounds = YES;
     }
+    _firstNameTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"firstNameKey"];
+    _lastNameTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastNameKey"];
     self.displayNameTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"displayNameKey"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) keyboardWillToggle:(NSNotification *)aNotification
+{
+    CGRect frame = activeTextField.frame;
+    CGRect keyboard = [[aNotification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    float offset  = keyboard.origin.y - frame.origin.y - frame.size.height - 64;
+    
+    CGRect rect = self.view.frame;
+    if ([aNotification.name  isEqualToString:@"UIKeyboardWillShowNotification"]) {
+        if (offset > 0) {
+            return;
+        }
+        rect.origin.y += offset;
+    } else {
+        if (rect.origin.y == 64) {
+            return;
+        }
+        rect.origin.y = 64;
+    }
+    
+    float duration = [[aNotification.userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    [UIView animateWithDuration:duration animations:^() {
+        self.view.frame = rect;
+    }];
 }
 
 - (BOOL)isDisplayNameAndServiceTypeValid
@@ -73,7 +111,6 @@
                                                        delegate:nil
                                               cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
-
         return NO;
     }
     
@@ -82,21 +119,24 @@
         advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID discoveryInfo:nil serviceType:self.serviceType];
     }
     @catch (NSException *exception) {
-        NSLog(@"Invalid service type [%@]", self.serviceType);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[NSString stringWithFormat:@"Invalid service type '%@'", self.serviceType]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
         return NO;
     }
     
-    NSLog(@"Room Name [%@] (aka service type) and display name [%@] are valid", advertiser.serviceType, peerID.displayName);
     return YES;
 }
 
 - (IBAction)done:(id)sender
 {
     if ([self isDisplayNameAndServiceTypeValid]) {
-        NSDictionary *profile = @{@"displayName" : self.displayNameTextField.text};
-        [self.delegate controller:self didFinishProfile:profile];
-    } else {
-        
+        [[NSUserDefaults standardUserDefaults] setObject:_firstNameTextField.text forKey:@"firstNameKey"];
+        [[NSUserDefaults standardUserDefaults] setObject:_lastNameTextField.text forKey:@"lastNameKey"];
+        [[NSUserDefaults standardUserDefaults] setObject:_displayNameTextField.text forKey:@"displayNameKey"];
+        [self.delegate controller:self didFinish:_displayNameTextField.text];
     }
 }
 
@@ -160,6 +200,35 @@
             self.profileImage.clipsToBounds = YES;
         });
     });
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    activeTextField = textField;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self.view endEditing:YES];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [self.view endEditing:YES];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField == _firstNameTextField || textField == _lastNameTextField) {
+        NSRange r = {0, 1};
+        _displayNameTextField.text = [NSString stringWithFormat:@"%@%@",
+                                      _firstNameTextField.text.length > 0 ? [_firstNameTextField.text substringWithRange:r].lowercaseString: @"",
+                                      _lastNameTextField.text.lowercaseString];
+    }
+    return YES;
 }
 
 @end

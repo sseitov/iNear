@@ -12,7 +12,7 @@
 
 @protocol ProfileControllerDelegate <NSObject>
 
-- (void)controller:(ProfileController*)controller didFinishProfile:(NSDictionary*)profile;
+- (void)controller:(ProfileController*)controller didFinish:(NSString*)displayName;
 
 @end
 

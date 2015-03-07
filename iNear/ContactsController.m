@@ -10,8 +10,7 @@
 #import "ProfileController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-NSString * const kNSDefaultDisplayNameKey = @"displayNameKey";
-NSString * const kAppServiceType = @"iNearApp";
+#define kAppServiceType @"iNearApp"
 
 @interface ContactsController () <MCSessionDelegate, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate, ProfileControllerDelegate>
 
@@ -46,7 +45,7 @@ NSString * const kAppServiceType = @"iNearApp";
         [_browser startBrowsingForPeers];
         [_advertiser startAdvertisingPeer];
     } else {
-        if (![self openSession:[[NSUserDefaults standardUserDefaults] objectForKey:kNSDefaultDisplayNameKey]]) {
+        if (![self openSession:[[NSUserDefaults standardUserDefaults] objectForKey:@"displayNameKey"]]) {
             [self performSegueWithIdentifier:@"CreateProfile" sender:self];
         }
     }
@@ -171,10 +170,8 @@ NSString * const kAppServiceType = @"iNearApp";
 
 #pragma mark - ProfileControllerDelegate
 
-- (void)controller:(ProfileController*)controller didFinishProfile:(NSDictionary*)profile;
+- (void)controller:(ProfileController*)controller didFinish:(NSString*)displayName
 {
-    NSString* displayName = [profile valueForKey:@"displayName"];
-    [[NSUserDefaults standardUserDefaults] setObject:displayName forKey:kNSDefaultDisplayNameKey];
     [self openSession:displayName];
     [controller dismissViewControllerAnimated:YES completion:^() {}];
 }
