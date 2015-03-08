@@ -19,8 +19,15 @@
 		2C2786A51AA8BB7D00D7F014 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */; };
 		2C2786A71AA8BB8900D7F014 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */; };
 		2C2786AA1AA8BC2E00D7F014 /* PixateFreestyle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */; };
+		2C45FC681AAB69820084BE37 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC671AAB69820084BE37 /* CallController.m */; };
+		2C45FC6B1AAB77F60084BE37 /* DragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC6A1AAB77F60084BE37 /* DragView.m */; };
+		2C45FC6E1AAB7BE90084BE37 /* VideoLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */; };
+		2C45FC701AAB7C330084BE37 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */; };
+		2C45FC721AAB7C650084BE37 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC711AAB7C650084BE37 /* AVFoundation.framework */; };
+		2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC741AAB7D9C0084BE37 /* Camera.m */; };
+		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
+		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
 		2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */; };
-		2CD0F8B01AA92787008F6CC7 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD0F8AF1AA92787008F6CC7 /* ProfileController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,10 +46,22 @@
 		2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PixateFreestyle.framework; path = ../../../../../Users/sseitov/Documents/SDK/PixateFreestyle/PixateFreestyle.framework; sourceTree = "<group>"; };
+		2C45FC661AAB69820084BE37 /* CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallController.h; sourceTree = "<group>"; };
+		2C45FC671AAB69820084BE37 /* CallController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallController.m; sourceTree = "<group>"; };
+		2C45FC691AAB77F60084BE37 /* DragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragView.h; sourceTree = "<group>"; };
+		2C45FC6A1AAB77F60084BE37 /* DragView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragView.m; sourceTree = "<group>"; };
+		2C45FC6C1AAB7BE90084BE37 /* VideoLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLayerView.h; sourceTree = "<group>"; };
+		2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoLayerView.m; sourceTree = "<group>"; };
+		2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		2C45FC711AAB7C650084BE37 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2C45FC731AAB7D9C0084BE37 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		2C45FC741AAB7D9C0084BE37 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Camera.m; sourceTree = "<group>"; };
+		2C45FC751AAB7D9C0084BE37 /* VTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTDecoder.h; sourceTree = "<group>"; };
+		2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTDecoder.m; sourceTree = "<group>"; };
+		2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTEncoder.h; sourceTree = "<group>"; };
+		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
 		2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
-		2CD0F8AE1AA92787008F6CC7 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
-		2CD0F8AF1AA92787008F6CC7 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +69,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C45FC721AAB7C650084BE37 /* AVFoundation.framework in Frameworks */,
+				2C45FC701AAB7C330084BE37 /* CoreMedia.framework in Frameworks */,
 				2C2786AA1AA8BC2E00D7F014 /* PixateFreestyle.framework in Frameworks */,
 				2C2786A71AA8BB8900D7F014 /* VideoToolbox.framework in Frameworks */,
 				2C2786A51AA8BB7D00D7F014 /* MultipeerConnectivity.framework in Frameworks */,
@@ -84,12 +105,11 @@
 		2C2786711AA8A28B00D7F014 /* iNear */ = {
 			isa = PBXGroup;
 			children = (
+				2C45FC7C1AAB8C200084BE37 /* Chat */,
 				2C2786761AA8A28B00D7F014 /* AppDelegate.h */,
 				2C2786771AA8A28B00D7F014 /* AppDelegate.m */,
 				2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */,
 				2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */,
-				2CD0F8AE1AA92787008F6CC7 /* ProfileController.h */,
-				2CD0F8AF1AA92787008F6CC7 /* ProfileController.m */,
 			);
 			path = iNear;
 			sourceTree = "<group>";
@@ -118,6 +138,8 @@
 		2C2786A81AA8BB9300D7F014 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C45FC711AAB7C650084BE37 /* AVFoundation.framework */,
+				2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */,
 				2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */,
 				2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */,
 				2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */,
@@ -126,6 +148,33 @@
 				2C27869E1AA8BB5400D7F014 /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2C45FC7C1AAB8C200084BE37 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				2C4814E01AAC6AB300437453 /* Video */,
+				2C45FC661AAB69820084BE37 /* CallController.h */,
+				2C45FC671AAB69820084BE37 /* CallController.m */,
+			);
+			name = Chat;
+			sourceTree = "<group>";
+		};
+		2C4814E01AAC6AB300437453 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				2C45FC691AAB77F60084BE37 /* DragView.h */,
+				2C45FC6A1AAB77F60084BE37 /* DragView.m */,
+				2C45FC6C1AAB7BE90084BE37 /* VideoLayerView.h */,
+				2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */,
+				2C45FC731AAB7D9C0084BE37 /* Camera.h */,
+				2C45FC741AAB7D9C0084BE37 /* Camera.m */,
+				2C45FC751AAB7D9C0084BE37 /* VTDecoder.h */,
+				2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */,
+				2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */,
+				2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */,
+			);
+			name = Video;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,10 +249,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */,
 				2C2786781AA8A28B00D7F014 /* AppDelegate.m in Sources */,
 				2C2786751AA8A28B00D7F014 /* main.m in Sources */,
 				2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */,
-				2CD0F8B01AA92787008F6CC7 /* ProfileController.m in Sources */,
+				2C45FC681AAB69820084BE37 /* CallController.m in Sources */,
+				2C45FC6E1AAB7BE90084BE37 /* VideoLayerView.m in Sources */,
+				2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */,
+				2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */,
+				2C45FC6B1AAB77F60084BE37 /* DragView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
