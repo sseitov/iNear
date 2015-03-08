@@ -16,7 +16,6 @@
 		2C27869F1AA8BB5400D7F014 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C27869E1AA8BB5400D7F014 /* Foundation.framework */; };
 		2C2786A11AA8BB6200D7F014 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A01AA8BB6200D7F014 /* UIKit.framework */; };
 		2C2786A31AA8BB6D00D7F014 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A21AA8BB6D00D7F014 /* CoreGraphics.framework */; };
-		2C2786A51AA8BB7D00D7F014 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */; };
 		2C2786A71AA8BB8900D7F014 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */; };
 		2C2786AA1AA8BC2E00D7F014 /* PixateFreestyle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */; };
 		2C45FC681AAB69820084BE37 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC671AAB69820084BE37 /* CallController.m */; };
@@ -28,6 +27,8 @@
 		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
 		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
 		2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */; };
+		2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB11AACBC6E000CE97B /* ProfileController.m */; };
+		2CE4ECB51AACC12B000CE97B /* LogoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB41AACC12B000CE97B /* LogoController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +44,6 @@
 		2C27869E1AA8BB5400D7F014 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C2786A01AA8BB6200D7F014 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2C2786A21AA8BB6D00D7F014 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PixateFreestyle.framework; path = ../../../../../Users/sseitov/Documents/SDK/PixateFreestyle/PixateFreestyle.framework; sourceTree = "<group>"; };
 		2C45FC661AAB69820084BE37 /* CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallController.h; sourceTree = "<group>"; };
@@ -62,6 +62,10 @@
 		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
 		2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
+		2CE4ECB01AACBC6E000CE97B /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
+		2CE4ECB11AACBC6E000CE97B /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
+		2CE4ECB31AACC12B000CE97B /* LogoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogoController.h; sourceTree = "<group>"; };
+		2CE4ECB41AACC12B000CE97B /* LogoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogoController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,7 +77,6 @@
 				2C45FC701AAB7C330084BE37 /* CoreMedia.framework in Frameworks */,
 				2C2786AA1AA8BC2E00D7F014 /* PixateFreestyle.framework in Frameworks */,
 				2C2786A71AA8BB8900D7F014 /* VideoToolbox.framework in Frameworks */,
-				2C2786A51AA8BB7D00D7F014 /* MultipeerConnectivity.framework in Frameworks */,
 				2C2786A31AA8BB6D00D7F014 /* CoreGraphics.framework in Frameworks */,
 				2C2786A11AA8BB6200D7F014 /* UIKit.framework in Frameworks */,
 				2C27869F1AA8BB5400D7F014 /* Foundation.framework in Frameworks */,
@@ -110,6 +113,10 @@
 				2C2786771AA8A28B00D7F014 /* AppDelegate.m */,
 				2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */,
 				2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */,
+				2CE4ECB01AACBC6E000CE97B /* ProfileController.h */,
+				2CE4ECB11AACBC6E000CE97B /* ProfileController.m */,
+				2CE4ECB31AACC12B000CE97B /* LogoController.h */,
+				2CE4ECB41AACC12B000CE97B /* LogoController.m */,
 			);
 			path = iNear;
 			sourceTree = "<group>";
@@ -142,7 +149,6 @@
 				2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */,
 				2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */,
 				2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */,
-				2C2786A41AA8BB7D00D7F014 /* MultipeerConnectivity.framework */,
 				2C2786A21AA8BB6D00D7F014 /* CoreGraphics.framework */,
 				2C2786A01AA8BB6200D7F014 /* UIKit.framework */,
 				2C27869E1AA8BB5400D7F014 /* Foundation.framework */,
@@ -250,6 +256,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */,
+				2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */,
+				2CE4ECB51AACC12B000CE97B /* LogoController.m in Sources */,
 				2C2786781AA8A28B00D7F014 /* AppDelegate.m in Sources */,
 				2C2786751AA8A28B00D7F014 /* main.m in Sources */,
 				2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */,
