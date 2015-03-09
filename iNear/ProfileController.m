@@ -8,6 +8,7 @@
 
 #import "ProfileController.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "AppDelegate.h"
 
 @interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
@@ -26,6 +27,11 @@
 @end
 
 @implementation ProfileController
+
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 + (UIColor*)MD5color:(NSString*)toMd5
 {
@@ -68,6 +74,8 @@
         _profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
         _profileImage.clipsToBounds = YES;
     }
+    _account.text = [_profile objectForKey:@"account"];
+    _password.text = [_profile objectForKey:@"password"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillHideNotification object:nil];
@@ -105,6 +113,14 @@
 
 - (IBAction)connect:(id)sender
 {
+    [[self appDelegate] disconnect];
+    
+    [_profile setObject:_account.text forKey:@"account"];
+    [_profile setObject:_password.text forKey:@"password"];
+    [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    [[self appDelegate] connect];
 }
 
 - (IBAction)takePhoto:(id)sender
