@@ -27,6 +27,9 @@
 		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
 		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
 		2CC7C02C1AADA19C0051A250 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */; };
+		2CC7C02F1AAE08140051A250 /* ChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C02E1AAE08140051A250 /* ChatController.m */; };
+		2CC7C0321AAE14300051A250 /* MessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C0311AAE14300051A250 /* MessageView.m */; };
+		2CC7C0351AAE40BA0051A250 /* ImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C0341AAE40BA0051A250 /* ImageView.m */; };
 		2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */; };
 		2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB11AACBC6E000CE97B /* ProfileController.m */; };
 		2CE4ECB51AACC12B000CE97B /* LogoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB41AACC12B000CE97B /* LogoController.m */; };
@@ -178,6 +181,12 @@
 		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
 		2CC7C02A1AADA19C0051A250 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
 		2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
+		2CC7C02D1AAE08140051A250 /* ChatController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatController.h; sourceTree = "<group>"; };
+		2CC7C02E1AAE08140051A250 /* ChatController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatController.m; sourceTree = "<group>"; };
+		2CC7C0301AAE14300051A250 /* MessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageView.h; sourceTree = "<group>"; };
+		2CC7C0311AAE14300051A250 /* MessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageView.m; sourceTree = "<group>"; };
+		2CC7C0331AAE40BA0051A250 /* ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageView.h; sourceTree = "<group>"; };
+		2CC7C0341AAE40BA0051A250 /* ImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageView.m; sourceTree = "<group>"; };
 		2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
 		2CE4ECB01AACBC6E000CE97B /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
@@ -532,8 +541,12 @@
 			isa = PBXGroup;
 			children = (
 				2C4814E01AAC6AB300437453 /* Video */,
-				2C45FC661AAB69820084BE37 /* CallController.h */,
-				2C45FC671AAB69820084BE37 /* CallController.m */,
+				2CC7C0331AAE40BA0051A250 /* ImageView.h */,
+				2CC7C0341AAE40BA0051A250 /* ImageView.m */,
+				2CC7C0301AAE14300051A250 /* MessageView.h */,
+				2CC7C0311AAE14300051A250 /* MessageView.m */,
+				2CC7C02D1AAE08140051A250 /* ChatController.h */,
+				2CC7C02E1AAE08140051A250 /* ChatController.m */,
 			);
 			name = Chat;
 			sourceTree = "<group>";
@@ -541,6 +554,8 @@
 		2C4814E01AAC6AB300437453 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				2C45FC661AAB69820084BE37 /* CallController.h */,
+				2C45FC671AAB69820084BE37 /* CallController.m */,
 				2C45FC691AAB77F60084BE37 /* DragView.h */,
 				2C45FC6A1AAB77F60084BE37 /* DragView.m */,
 				2C45FC6C1AAB7BE90084BE37 /* VideoLayerView.h */,
@@ -1282,6 +1297,7 @@
 				2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */,
 				2CE4EDA11AACECF4000CE97B /* XMPPMUC.m in Sources */,
 				2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */,
+				2CC7C02F1AAE08140051A250 /* ChatController.m in Sources */,
 				2CE4ECF41AACE83A000CE97B /* XMPPParser.m in Sources */,
 				2CE4EE231AACEED8000CE97B /* XMPPMessageArchivingCoreDataStorage.m in Sources */,
 				2CE4EDDC1AACED87000CE97B /* XMPPvCardTempEmail.m in Sources */,
@@ -1302,6 +1318,7 @@
 				2CE4ED2C1AACE924000CE97B /* GCDAsyncSocket.m in Sources */,
 				2CE4ECC91AACE7D6000CE97B /* XMPPAnonymousAuthentication.m in Sources */,
 				2CE4EE3B1AACEFB4000CE97B /* XEP_0223.m in Sources */,
+				2CC7C0351AAE40BA0051A250 /* ImageView.m in Sources */,
 				2CE4ED0A1AACE84F000CE97B /* XMPPStringPrep.m in Sources */,
 				2CE4ED181AACE8E5000CE97B /* DDDispatchQueueLogFormatter.m in Sources */,
 				2CE4EE071AACEE58000CE97B /* XMPPCapabilities.m in Sources */,
@@ -1391,6 +1408,7 @@
 				2CE4EDB81AACED50000CE97B /* XMPPRoomMemoryStorage.m in Sources */,
 				2CE4EE211AACEED8000CE97B /* XMPPMessageArchiving_Message_CoreDataObject.m in Sources */,
 				2CE4ED281AACE8FD000CE97B /* DDLog.m in Sources */,
+				2CC7C0321AAE14300051A250 /* MessageView.m in Sources */,
 				2CE4EE041AACEE39000CE97B /* XMPPTransports.m in Sources */,
 				2CE4ED091AACE84F000CE97B /* XMPPSRVResolver.m in Sources */,
 				2CE4EE401AACEFD4000CE97B /* XMPPAttentionModule.m in Sources */,

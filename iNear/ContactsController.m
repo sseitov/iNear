@@ -9,17 +9,17 @@
 #import "ContactsController.h"
 #import "AppDelegate.h"
 #import "ProfileController.h"
+#import "ChatController.h"
 
 #import "XMPPFramework.h"
-#import "DDLog.h"
 
-// Log levels: off, error, warn, info, verbose
-#undef LOG_LEVEL_DEF // Undefine first only if needed
-#define LOG_LEVEL_DEF LOG_LEVEL_OFF
+#define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
 @interface ContactsController () {
     NSFetchedResultsController *fetchedResultsController;
 }
+
+- (IBAction)addContact:(id)sender;
 
 @end
 
@@ -33,11 +33,27 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSubscribe:) name:XmppSubscribeNotification object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if (![self.appDelegate isXMPPConnected]) {
+        [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
+            if (!result) {
+                [self performSegueWithIdentifier:@"MyProfile" sender:self];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:XmppConnectedNotification object:nil];
+            }
+        }];
+    }
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark NSFetchedResultsController
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +87,7 @@
         NSError *error = nil;
         if (![fetchedResultsController performFetch:&error])
         {
-            DDLogError(@"Error performing fetch: %@", error);
+            NSLog(@"Error performing fetch: %@", error);
         }
         
     }
@@ -159,12 +175,59 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-/*    if ([[segue identifier] isEqualToString:@"CreateChat"]) {
+    if ([[segue identifier] isEqualToString:@"Chat"]) {
         UITableViewCell* cell = sender;
         NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [cell setSelected:NO animated:YES];
-    }*/
+        UINavigationController *vc = [segue destinationViewController];
+        ChatController *chat = (ChatController*)vc.topViewController;
+        chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    }
+}
+
+#pragma mark - XMPP notifications
+
+- (void)handleSubscribe:(NSNotification*)note
+{
+    XMPPPresence* presence = note.object;
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"User subscribe request"
+                                                                             message:[presence from].user
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *accept = [UIAlertAction actionWithTitle:@"Accept"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
+                                                       [self.appDelegate.xmppRoster acceptPresenceSubscriptionRequestFrom:[presence from] andAddToRoster:YES];
+                                                   }];
+    [alertController addAction:accept];
+    UIAlertAction *reject = [UIAlertAction actionWithTitle:@"Reject"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
+                                                       [self.appDelegate.xmppRoster rejectPresenceSubscriptionRequestFrom:[presence from]];
+                                                   }];
+    [alertController addAction:reject];
+
+    if(IS_PAD) {
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:alertController];
+        [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    UITextField* textField = [alertView textFieldAtIndex:0];
+    XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", textField.text]];
+    [self.appDelegate.xmppRoster addUser:jid withNickname:textField.text];
+}
+
+- (IBAction)addContact:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add user"
+                                                    message:@"Input user jid:"
+                                                   delegate:self
+                                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert show];
 }
 
 @end

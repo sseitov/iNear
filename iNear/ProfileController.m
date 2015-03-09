@@ -9,7 +9,7 @@
 #import "ProfileController.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "AppDelegate.h"
-#import "MBProgressHUD.h"
+#import "XMPPvCardTemp.h"
 
 @interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
@@ -19,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
 @property (weak, nonatomic) IBOutlet UITextField *account;
 @property (weak, nonatomic) IBOutlet UITextField *password;
+@property (weak, nonatomic) IBOutlet UITextField *displayName;
+@property (weak, nonatomic) IBOutlet UILabel *status;
 
 - (IBAction)takePhoto:(id)sender;
 - (IBAction)connect:(id)sender;
@@ -63,6 +65,8 @@
 {
     [super viewDidLoad];
     
+    self.navigationItem.leftBarButtonItem = nil;
+    
     NSDictionary * dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
     if (dict) {
         _profile = [NSMutableDictionary dictionaryWithDictionary:dict];
@@ -78,13 +82,28 @@
     _account.text = [_profile objectForKey:@"account"];
     _password.text = [_profile objectForKey:@"password"];
     
+    if ([self.appDelegate isXMPPConnected]) {
+        _status.text = @"Connected";
+        _status.textColor = [UIColor colorWithRed:46.0/255.0 green:129.0/255.0 blue:24.0/255.0 alpha:1];
+    } else {
+        _status.text = @"Disconnected";
+        _status.textColor = [UIColor redColor];
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppConnectedNotification object:nil];
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) handleConnected:(NSNotification *)aNotification
+{
+    _status.text = @"Connected";
+    _status.textColor = [UIColor colorWithRed:46.0/255.0 green:129.0/255.0 blue:24.0/255.0 alpha:1];
 }
 
 - (void) keyboardWillToggle:(NSNotification *)aNotification
@@ -114,25 +133,56 @@
 
 - (IBAction)connect:(id)sender
 {
-    [[self appDelegate] disconnect];
-    
-    [_profile setObject:_account.text forKey:@"account"];
-    [_profile setObject:_password.text forKey:@"password"];
-    [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [[self appDelegate] connect:^(BOOL result) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        if (!result) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error!"
-                                                            message:@"Check your login and password."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-            [alert show];
-        }
+    [[self appDelegate] disconnectXmppFromViewController:self result:^() {
+        _status.text = @"Disconnected";
+        _status.textColor = [UIColor redColor];
+        
+        [_profile setObject:_account.text forKey:@"account"];
+        [_profile setObject:_password.text forKey:@"password"];
+        [_profile setObject:_displayName.text forKey:@"displayName"];
+        [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        
+        [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
+            if (!result) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error!"
+                                                                message:@"Check your login and password."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                [alert show];
+            } else {
+                _status.text = @"Connected";
+                _status.textColor = [UIColor colorWithRed:46.0/255.0 green:129.0/255.0 blue:24.0/255.0 alpha:1];
+                if ([_profile objectForKey:@"image"]) {
+                    [self updateAvatar:[_profile objectForKey:@"image"]];
+                }
+            }
+        }];
     }];
+}
+
+- (void)updateAvatar:(NSData*)avatar
+{
+    dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
+    dispatch_async(queue, ^{
+        XMPPvCardTemp *myVcardTemp = [self.appDelegate.xmppvCardTempModule myvCardTemp];
+        if (myVcardTemp) {
+            [myVcardTemp setPhoto:avatar];
+        } else {
+            NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
+            NSXMLElement *photoXML = [NSXMLElement elementWithName:@"PHOTO"];
+            NSXMLElement *typeXML = [NSXMLElement elementWithName:@"TYPE"stringValue:@"image/jpeg"];
+            NSXMLElement *binvalXML = [NSXMLElement elementWithName:@"BINVAL"
+                                                        stringValue:[avatar base64EncodedStringWithOptions:kNilOptions]];
+            [photoXML addChild:typeXML];
+            [photoXML addChild:binvalXML];
+            [vCardXML addChild:photoXML];
+            
+            myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
+        }
+        [self.appDelegate.xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
+    });
 }
 
 - (IBAction)takePhoto:(id)sender
@@ -146,6 +196,10 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    if (buttonIndex == 2) {
+        return;
+    }
+    
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     
     if (imagePicker) {
@@ -163,6 +217,7 @@
         }
         else if (1 == buttonIndex) {
             imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            imagePicker.modalPresentationStyle = UIModalPresentationFormSheet;
         }
         [self presentViewController:imagePicker animated:YES completion:nil];
     }
@@ -175,6 +230,38 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+// Change image resolution (auto-resize to fit)
++ (UIImage *)scaleImage:(UIImage*)image toResolution:(int)resolution
+{
+    CGImageRef imgRef = [image CGImage];
+    CGFloat width = CGImageGetWidth(imgRef);
+    CGFloat height = CGImageGetHeight(imgRef);
+    CGRect bounds = CGRectMake(0, 0, width, height);
+    
+    //if already at the minimum resolution, return the orginal image, otherwise scale
+    if (width <= resolution && height <= resolution) {
+        return image;
+        
+    } else {
+        CGFloat ratio = width/height;
+        
+        if (ratio > 1) {
+            bounds.size.width = resolution;
+            bounds.size.height = bounds.size.width / ratio;
+        } else {
+            bounds.size.height = resolution;
+            bounds.size.width = bounds.size.height * ratio;
+        }
+    }
+    
+    UIGraphicsBeginImageContext(bounds.size);
+    [image drawInRect:CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)];
+    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return imageCopy;
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -182,12 +269,17 @@
     // Don't block the UI when writing the image to documents
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         // We only handle a still image
-        UIImage *imageToSave = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
+        UIImage *imageToSave = [ProfileController scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
+                                                toResolution:128];
         // Save the new image to the documents directory
-        NSData *pngData = UIImageJPEGRepresentation(imageToSave, 1.0);
-        [_profile setObject:pngData forKey:@"image"];
-        [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
+        if ([self.appDelegate isXMPPConnected]) {
+            [self updateAvatar:pngData];
+        } else {
+            [_profile setObject:pngData forKey:@"image"];
+            [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image  = imageToSave;

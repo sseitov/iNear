@@ -11,5 +11,6 @@
 @interface ProfileController : UIViewController
 
 + (UIColor*)MD5color:(NSString*)toMd5;
++ (UIImage *)scaleImage:(UIImage*)image toResolution:(int)resolution;
 
 @end

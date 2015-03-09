@@ -8,18 +8,14 @@
 
 #import "AppDelegate.h"
 #import "Camera.h"
+#import "MBProgressHUD.h"
 
-#import "GCDAsyncSocket.h"
-#import "XMPP.h"
 #import "XMPPLogging.h"
-#import "XMPPReconnect.h"
-#import "XMPPCapabilitiesCoreDataStorage.h"
-#import "XMPPRosterCoreDataStorage.h"
-#import "XMPPvCardAvatarModule.h"
-#import "XMPPvCardCoreDataStorage.h"
-
 #import "DDLog.h"
 #import "DDTTYLogger.h"
+
+#define WAIT(a) [a lock]; [a wait]; [a unlock]
+#define SIGNAL(a) [a lock]; [a signal]; [a unlock]
 
 @interface AppDelegate () <UISplitViewControllerDelegate, XMPPRosterDelegate> {
     NSString *password;
@@ -28,12 +24,11 @@
     NSCondition *connectCondition;
 }
 
-@property (nonatomic, strong, readonly) XMPPStream *xmppStream;
+@property (weak, nonatomic) UISplitViewController *splitViewController;
+
 @property (nonatomic, strong, readonly) XMPPReconnect *xmppReconnect;
-@property (nonatomic, strong, readonly) XMPPRoster *xmppRoster;
 @property (nonatomic, strong, readonly) XMPPRosterCoreDataStorage *xmppRosterStorage;
 @property (nonatomic, strong, readonly) XMPPvCardCoreDataStorage *xmppvCardStorage;
-@property (nonatomic, strong, readonly) XMPPvCardTempModule *xmppvCardTempModule;
 @property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
 @property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
 
@@ -45,22 +40,29 @@
 
 @end
 
+NSString* const XmppConnectedNotification = @"XmppConnectedNotification";
+NSString* const XmppSubscribeNotification = @"XmppSubscribeNotification";
+NSString* const XmppMessageNotification = @"XmppMessageNotification";
+
 @implementation AppDelegate
 
+- (BOOL)isXMPPConnected
+{
+    return isXmppConnected;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[Camera shared] startup];
 
     // Configure logging framework
-//    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
+    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
     [self setupStream];
 
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    splitViewController.delegate = self;
-
-    [self connect];
+    _splitViewController = (UISplitViewController *)self.window.rootViewController;
+    _splitViewController.presentsWithGesture = NO;
+    _splitViewController.delegate = self;
     
     return YES;
 }
@@ -279,18 +281,36 @@
 #pragma mark Connect/disconnect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)connect:(void (^)(BOOL))result
+- (void)connectXmppFromViewController:(UIViewController*)controller result:(void (^)(BOOL))result
 {
+    [MBProgressHUD showHUDAddedTo:controller.view animated:YES];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         connectCondition = [NSCondition new];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![self connect]) {
-                [connectCondition signal];
+                SIGNAL(connectCondition);
             }
         });
-        [connectCondition wait];
+        WAIT(connectCondition);
         dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:controller.view animated:YES];
             result(isXmppConnected);
+        });
+    });
+}
+
+- (void)disconnectXmppFromViewController:(UIViewController*)controller result:(void (^)())complete
+{
+    [MBProgressHUD showHUDAddedTo:controller.view animated:YES];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        connectCondition = [NSCondition new];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self disconnect];
+        });
+        WAIT(connectCondition);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:controller.view animated:YES];
+            complete();
         });
     });
 }
@@ -405,14 +425,14 @@
 {
     [self goOnline];
     isXmppConnected = YES;
-    [connectCondition signal];
+    SIGNAL(connectCondition);
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
 {
     NSLog(@"Error didNotAuthenticate: %@", error);
     isXmppConnected = NO;
-    [connectCondition signal];
+    SIGNAL(connectCondition);
 }
 
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq
@@ -422,30 +442,21 @@
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
-    if ([message isChatMessageWithBody])
+    if ([message isChatMessage])
     {
         XMPPUserCoreDataStorageObject *user = [_xmppRosterStorage userForJID:[message from]
                                                                   xmppStream:_xmppStream
                                                         managedObjectContext:[self managedObjectContext_roster]];
         
-        NSString *body = [[message elementForName:@"body"] stringValue];
-        NSString *displayName = [user displayName];
-        
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
-                                                                message:body
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Ok"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-        }
-        else
-        {
-            // We are not active, so use a local notification instead
+            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification
+                                                                object:user
+                                                              userInfo:@{@"message" : message}];
+        } else {
             UILocalNotification *localNotification = [[UILocalNotification alloc] init];
             localNotification.alertAction = @"Ok";
-            localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
+            localNotification.alertBody = [NSString stringWithFormat:@"From: %@", [user displayName]];
             
             [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
         }
@@ -454,6 +465,9 @@
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence
 {
+    if  ([presence.type isEqualToString:@"subscribe"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:XmppSubscribeNotification object:presence];
+    }
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveError:(id)error
@@ -467,6 +481,7 @@
         NSLog(@"Unable to connect to server. Check xmppStream.hostName");
     }
     isXmppConnected = NO;
+    SIGNAL(connectCondition);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,7 +540,7 @@
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
 {
-    return isXmppConnected;
+    return YES;
 }
 
 @end

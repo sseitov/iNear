@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,7 +13,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Copyright (c) 2015 Sergey Seitov. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
-                    <rect key="frame" x="20" y="439" width="440" height="21"/>
+                    <rect key="frame" x="20" y="431" width="440" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="j9V-yk-Mkl"/>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="xJV-h7-Afy"/>
@@ -22,7 +23,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="6mI-2l-0UC">
-                    <rect key="frame" x="80" y="80" width="320" height="320"/>
+                    <rect key="frame" x="84" y="80" width="312" height="312"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="6mI-2l-0UC" secondAttribute="height" multiplier="1:1" id="paU-uc-IUU"/>
                     </constraints>
@@ -36,7 +37,7 @@
                 <constraint firstAttribute="centerX" secondItem="6mI-2l-0UC" secondAttribute="centerX" id="IlK-wJ-enS"/>
                 <constraint firstItem="6mI-2l-0UC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" constant="80" id="Li8-gz-BFh"/>
                 <constraint firstAttribute="trailing" secondItem="8ie-xW-0ye" secondAttribute="trailing" constant="20" id="OFT-WW-XNj"/>
-                <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="a4s-Uk-fUa"/>
+                <constraint firstAttribute="bottomMargin" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="a4s-Uk-fUa"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6mI-2l-0UC" secondAttribute="trailing" constant="80" id="aDJ-lp-5wP"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
