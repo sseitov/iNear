@@ -26,6 +26,7 @@
 		2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC741AAB7D9C0084BE37 /* Camera.m */; };
 		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
 		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
+		2CC7C02C1AADA19C0051A250 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */; };
 		2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */; };
 		2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB11AACBC6E000CE97B /* ProfileController.m */; };
 		2CE4ECB51AACC12B000CE97B /* LogoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4ECB41AACC12B000CE97B /* LogoController.m */; };
@@ -175,6 +176,8 @@
 		2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTDecoder.m; sourceTree = "<group>"; };
 		2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTEncoder.h; sourceTree = "<group>"; };
 		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
+		2CC7C02A1AADA19C0051A250 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
+		2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
 		2CD0F8AB1AA91598008F6CC7 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CD0F8AC1AA91598008F6CC7 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
 		2CE4ECB01AACBC6E000CE97B /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
@@ -449,6 +452,7 @@
 		2C2786661AA8A28B00D7F014 = {
 			isa = PBXGroup;
 			children = (
+				2CC7C0291AADA1840051A250 /* MBProgressHUD */,
 				2CE4ECB61AACE646000CE97B /* XMPPFramework */,
 				2C2786711AA8A28B00D7F014 /* iNear */,
 				2C27869B1AA8AE9C00D7F014 /* Resources */,
@@ -549,6 +553,15 @@
 				2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */,
 			);
 			name = Video;
+			sourceTree = "<group>";
+		};
+		2CC7C0291AADA1840051A250 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				2CC7C02A1AADA19C0051A250 /* MBProgressHUD.h */,
+				2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		2CE4ECB61AACE646000CE97B /* XMPPFramework */ = {
@@ -1332,6 +1345,7 @@
 				2CE4ED771AACEB7D000CE97B /* XMPPRosterCoreDataStorage.m in Sources */,
 				2CE4ED3D1AACE996000CE97B /* DDXMLElement.m in Sources */,
 				2CD0F8AD1AA91598008F6CC7 /* ContactsController.m in Sources */,
+				2CC7C02C1AADA19C0051A250 /* MBProgressHUD.m in Sources */,
 				2CE4EDF51AACEDBD000CE97B /* XMPPPubSub.m in Sources */,
 				2CE4ED781AACEB7D000CE97B /* XMPPUserCoreDataStorageObject.m in Sources */,
 				2CE4EDF81AACEDD8000CE97B /* TURNSocket.m in Sources */,

@@ -9,6 +9,7 @@
 #import "ProfileController.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "AppDelegate.h"
+#import "MBProgressHUD.h"
 
 @interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
@@ -90,7 +91,7 @@
 {
     CGRect frame = activeTextField.frame;
     CGRect keyboard = [[aNotification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    float offset  = keyboard.origin.y - frame.origin.y - frame.size.height - 64;
+    float offset  = keyboard.origin.y - frame.origin.y - frame.size.height - 64 - 20;
     
     CGRect rect = self.view.frame;
     if ([aNotification.name  isEqualToString:@"UIKeyboardWillShowNotification"]) {
@@ -120,7 +121,18 @@
     [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
-    [[self appDelegate] connect];
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [[self appDelegate] connect:^(BOOL result) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (!result) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error!"
+                                                            message:@"Check your login and password."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+    }];
 }
 
 - (IBAction)takePhoto:(id)sender

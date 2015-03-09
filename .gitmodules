@@ -1,3 +1,6 @@
 [submodule "XMPPFramework"]
 	path = XMPPFramework
 	url = https://github.com/robbiehanson/XMPPFramework.git
+[submodule "MBProgressHUD"]
+	path = MBProgressHUD
+	url = https://github.com/jdg/MBProgressHUD.git

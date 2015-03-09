@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-- (BOOL)connect;
+- (void)connect:(void (^)(BOOL))result;
 - (void)disconnect;
 
 @property (nonatomic, strong, readonly) XMPPvCardAvatarModule *xmppvCardAvatarModule;

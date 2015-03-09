@@ -18,10 +18,14 @@
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
 
+#import "DDLog.h"
+#import "DDTTYLogger.h"
+
 @interface AppDelegate () <UISplitViewControllerDelegate, XMPPRosterDelegate> {
     NSString *password;
     BOOL customCertEvaluation;
     BOOL isXmppConnected;
+    NSCondition *connectCondition;
 }
 
 @property (nonatomic, strong, readonly) XMPPStream *xmppStream;
@@ -48,6 +52,8 @@
 {
     [[Camera shared] startup];
 
+    // Configure logging framework
+//    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
     [self setupStream];
 
@@ -200,7 +206,7 @@
     //
     // If you don't specify a hostPort, then the default (5222) will be used.
     
-    //[_xmppStream setHostName:@"google.com"];
+    //[_xmppStream setHostName:@"googlemail.com"];
     //[_xmppStream setHostPort:5222];
     
     
@@ -272,6 +278,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Connect/disconnect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)connect:(void (^)(BOOL))result
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        connectCondition = [NSCondition new];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (![self connect]) {
+                [connectCondition signal];
+            }
+        });
+        [connectCondition wait];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            result(isXmppConnected);
+        });
+    });
+}
 
 - (BOOL)connect
 {
@@ -382,11 +404,15 @@
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
     [self goOnline];
+    isXmppConnected = YES;
+    [connectCondition signal];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
 {
     NSLog(@"Error didNotAuthenticate: %@", error);
+    isXmppConnected = NO;
+    [connectCondition signal];
 }
 
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq
@@ -440,6 +466,7 @@
     {
         NSLog(@"Unable to connect to server. Check xmppStream.hostName");
     }
+    isXmppConnected = NO;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
