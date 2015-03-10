@@ -11,6 +11,7 @@
 #import "XMPPFramework.h"
 
 extern NSString* const XmppConnectedNotification;
+extern NSString* const XmppDisconnectedNotification;
 extern NSString* const XmppSubscribeNotification;
 extern NSString* const XmppMessageNotification;
 

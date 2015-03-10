@@ -26,6 +26,8 @@
 		2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC741AAB7D9C0084BE37 /* Camera.m */; };
 		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
 		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
+		2CBE1E501AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */; };
+		2CBE1E511AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4F1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m */; };
 		2CC7C02C1AADA19C0051A250 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */; };
 		2CC7C02F1AAE08140051A250 /* ChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C02E1AAE08140051A250 /* ChatController.m */; };
 		2CC7C0321AAE14300051A250 /* MessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC7C0311AAE14300051A250 /* MessageView.m */; };
@@ -179,6 +181,10 @@
 		2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTDecoder.m; sourceTree = "<group>"; };
 		2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTEncoder.h; sourceTree = "<group>"; };
 		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
+		2CBE1E4C1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPMessage+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.h"; sourceTree = "<group>"; };
+		2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPMessage+XEP_0172.m"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.m"; sourceTree = "<group>"; };
+		2CBE1E4E1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPPresence+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPPresence+XEP_0172.h"; sourceTree = "<group>"; };
+		2CBE1E4F1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPPresence+XEP_0172.m"; path = "XMPPFramework/Extensions/XEP-0172/XMPPPresence+XEP_0172.m"; sourceTree = "<group>"; };
 		2CC7C02A1AADA19C0051A250 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
 		2CC7C02B1AADA19C0051A250 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
 		2CC7C02D1AAE08140051A250 /* ChatController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatController.h; sourceTree = "<group>"; };
@@ -570,6 +576,17 @@
 			name = Video;
 			sourceTree = "<group>";
 		};
+		2CBE1E4B1AAF6679000D1E22 /* XEP-0172 */ = {
+			isa = PBXGroup;
+			children = (
+				2CBE1E4C1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.h */,
+				2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */,
+				2CBE1E4E1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.h */,
+				2CBE1E4F1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m */,
+			);
+			name = "XEP-0172";
+			sourceTree = "<group>";
+		};
 		2CC7C0291AADA1840051A250 /* MBProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -640,6 +657,7 @@
 				2CE4ED821AACEC1D000CE97B /* XEP-0115 */,
 				2CE4ED811AACEC0B000CE97B /* XEP-0136 */,
 				2CE4ED801AACEBFA000CE97B /* XEP-0153 */,
+				2CBE1E4B1AAF6679000D1E22 /* XEP-0172 */,
 				2CE4ED7F1AACEBEC000CE97B /* XEP-0184 */,
 				2CE4ED7E1AACEBD7000CE97B /* XEP-0199 */,
 				2CE4ED7D1AACEBC9000CE97B /* XEP-0202 */,
@@ -1343,6 +1361,7 @@
 				2CE4ECF21AACE83A000CE97B /* XMPPMessage.m in Sources */,
 				2CE4ED751AACEB7D000CE97B /* XMPPResourceCoreDataStorageObject.m in Sources */,
 				2CE4ECD71AACE820000CE97B /* NSNumber+XMPP.m in Sources */,
+				2CBE1E511AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m in Sources */,
 				2CE4EDC61AACED63000CE97B /* XMPPRoomMessageHybridCoreDataStorageObject.m in Sources */,
 				2CE4EE411AACEFD4000CE97B /* XMPPMessage+XEP_0224.m in Sources */,
 				2CE4ED681AACEB62000CE97B /* XMPPResourceMemoryStorageObject.m in Sources */,
@@ -1377,6 +1396,7 @@
 				2CE4EDDA1AACED87000CE97B /* XMPPvCardTempAdrTypes.m in Sources */,
 				2C45FC681AAB69820084BE37 /* CallController.m in Sources */,
 				2CE4ED511AACEAC1000CE97B /* XMPPBandwidthMonitor.m in Sources */,
+				2CBE1E501AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m in Sources */,
 				2C45FC6E1AAB7BE90084BE37 /* VideoLayerView.m in Sources */,
 				2CE4EE161AACEE98000CE97B /* XMPPMessageArchiving.m in Sources */,
 				2CE4ED691AACEB62000CE97B /* XMPPRosterMemoryStorage.m in Sources */,
@@ -1478,7 +1498,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "4bd6bf4e-56b3-4449-8d4f-0f7d63baa321";
+				PROVISIONING_PROFILE = "28eba361-a7fa-48c0-9825-1b87d76a2ec2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1514,7 +1534,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "4bd6bf4e-56b3-4449-8d4f-0f7d63baa321";
+				PROVISIONING_PROFILE = "28eba361-a7fa-48c0-9825-1b87d76a2ec2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1543,6 +1563,7 @@
 					"$(PROJECT_DIR)/XMPPFramework/Vendor/libidn",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "28eba361-a7fa-48c0-9825-1b87d76a2ec2";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1569,6 +1590,7 @@
 					"$(PROJECT_DIR)/XMPPFramework/Vendor/libidn",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "28eba361-a7fa-48c0-9825-1b87d76a2ec2";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

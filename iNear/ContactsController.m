@@ -12,6 +12,7 @@
 #import "ChatController.h"
 
 #import "XMPPFramework.h"
+#import "XMPPvCardTemp.h"
 
 #define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
@@ -42,8 +43,6 @@
         [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
             if (!result) {
                 [self performSegueWithIdentifier:@"MyProfile" sender:self];
-            } else {
-                [[NSNotificationCenter defaultCenter] postNotificationName:XmppConnectedNotification object:nil];
             }
         }];
     }
@@ -76,6 +75,7 @@
         [fetchRequest setEntity:entity];
         [fetchRequest setSortDescriptors:sortDescriptors];
         [fetchRequest setFetchBatchSize:10];
+        [fetchRequest setPropertiesToFetch:@[]];
         
         fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                        managedObjectContext:moc
@@ -146,8 +146,14 @@
     
     XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 
+    
+    XMPPvCardTemp *temp = [self.appDelegate.xmppvCardTempModule vCardTempForJID:user.jid shouldFetch:YES];
     UILabel *displayName = (UILabel*)[cell.contentView viewWithTag:1];
-    displayName.text = user.displayName;
+    if (temp && temp.nickname && temp.nickname.length > 0) {
+        displayName.text = temp.nickname;
+    } else {
+        displayName.text = user.displayName;
+    }
     
     UILabel *shortName = (UILabel*)[cell.contentView viewWithTag:2];
     shortName.text = @"";
@@ -161,7 +167,7 @@
             icon.image = [UIImage imageWithData:photoData];
         } else {
             icon.image = nil;
-            [icon.layer setBackgroundColor:[ProfileController MD5color:user.displayName].CGColor];
+            [icon.layer setBackgroundColor:[ProfileController MD5color:displayName.text].CGColor];
             shortName.text = [[displayName.text substringWithRange:NSMakeRange(0, 2)] uppercaseString];
         }
     }

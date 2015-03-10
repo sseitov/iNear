@@ -41,6 +41,7 @@
 @end
 
 NSString* const XmppConnectedNotification = @"XmppConnectedNotification";
+NSString* const XmppDisconnectedNotification = @"XmppDisconnectedNotification";
 NSString* const XmppSubscribeNotification = @"XmppSubscribeNotification";
 NSString* const XmppMessageNotification = @"XmppMessageNotification";
 
@@ -294,6 +295,9 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
         WAIT(connectCondition);
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:controller.view animated:YES];
+            if (isXmppConnected) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:XmppConnectedNotification object:nil];
+            }
             result(isXmppConnected);
         });
     });
@@ -310,6 +314,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
         WAIT(connectCondition);
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:controller.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:XmppDisconnectedNotification object:nil];
             complete();
         });
     });
@@ -329,13 +334,6 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     NSString *myJID = [profile objectForKey:@"account"];
     NSString *myPassword = [profile objectForKey:@"password"];
     
-    //
-    // If you don't want to use the Settings view to set the JID,
-    // uncomment the section below to hard code a JID and password.
-    //
-    // myJID = @"user@gmail.com/xmppframework";
-    // myPassword = @"";
-    
     if (myJID == nil || myPassword == nil) {
         return NO;
     }
@@ -343,19 +341,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
     password = myPassword;
     
-    NSError *error = nil;
-    if (![_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error])
-    {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error connecting"
-                                                            message:@"See console for error details."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Ok"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-        return NO;
-    }
-    
-    return YES;
+    return [_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
 }
 
 - (void)disconnect
