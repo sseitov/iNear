@@ -7,7 +7,6 @@
 //
 
 #import "ProfileController.h"
-#import <CommonCrypto/CommonDigest.h>
 #import "AppDelegate.h"
 #import "XMPPvCardTemp.h"
 
@@ -16,17 +15,19 @@
     UITextField * activeTextField;
 }
 
-@property (weak, nonatomic) IBOutlet UIImageView *profileImage;
 @property (weak, nonatomic) IBOutlet UITextField *account;
 @property (weak, nonatomic) IBOutlet UITextField *password;
 @property (weak, nonatomic) IBOutlet UITextField *displayName;
 @property (weak, nonatomic) IBOutlet UIButton *status;
 @property (weak, nonatomic) IBOutlet UIButton *upload;
+@property (weak, nonatomic) IBOutlet UIButton *takeImage;
 
 - (IBAction)takePhoto:(id)sender;
 - (IBAction)connect:(id)sender;
+- (IBAction)uploadCard:(id)sender;
 
 @property (strong, nonatomic) NSMutableDictionary *profile;
+@property (strong, nonatomic) UIImageView *profileImage;
 
 @end
 
@@ -35,31 +36,6 @@
 - (AppDelegate *)appDelegate
 {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
-+ (UIColor*)MD5color:(NSString*)toMd5
-{
-    // Create pointer to the string as UTF8
-    const char *ptr = [toMd5 UTF8String];
-    
-    // Create byte array of unsigned chars
-    unsigned char md5Buffer[CC_MD5_DIGEST_LENGTH];
-    
-    // Create 16 byte MD5 hash value, store in buffer
-    CC_MD5(ptr, (CC_LONG)strlen(ptr), md5Buffer);
-    
-    float r = (float)md5Buffer[0]/256.0;
-    float g = (float)md5Buffer[1]/256.0;
-    float b = (float)md5Buffer[2]/256.0;
-    
-    // take the first decimal part to avoid the gaussian distribution in the middle
-    // (most users will be blueish without this)
-    r *= 10;
-    int r_i = (int)r;
-    r -= r_i;
-    NSLog(@"R %f G %f B %f", r,g,b);
-    return [UIColor colorWithHue:r saturation:1.0 brightness:1.0 alpha:1.0];
-    //return [UIColor colorWithRed:r green:g blue:b alpha:1.0];
 }
 
 - (void)viewDidLoad
@@ -72,7 +48,8 @@
     _status.layer.masksToBounds = YES;
     _status.layer.cornerRadius = 7.0;
     
-    _profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
+    _profileImage = [[UIImageView alloc] initWithFrame:_takeImage.bounds];
+    _profileImage.layer.cornerRadius = _profileImage.frame.size.width/2;
     _profileImage.clipsToBounds = YES;
     
     NSDictionary * dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
@@ -85,6 +62,7 @@
     NSData* imageData = [_profile objectForKey:@"image"];
     if (imageData) {
         _profileImage.image = [UIImage imageWithData:imageData];
+        [_takeImage addSubview:_profileImage];
     }
     _account.text = [_profile objectForKey:@"account"];
     _password.text = [_profile objectForKey:@"password"];
@@ -180,6 +158,9 @@
                 NSData* imageData = myVcardTemp.photo;
                 if (imageData && [_profile objectForKey:@"image"] == nil) {
                     _profileImage.image = [UIImage imageWithData:imageData];
+                    if (!_profileImage.superview) {
+                        [_takeImage addSubview:_profileImage];
+                    }
                     [_profile setObject:imageData forKey:@"image"];
                 }
                 NSString* nick = myVcardTemp.nickname;
@@ -205,7 +186,7 @@
     }
 }
 
-- (void)updateCard:(NSData*)avatar nick:(NSString*)nick
+- (IBAction)uploadCard:(id)sender
 {
     dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
     dispatch_async(queue, ^{
@@ -214,13 +195,15 @@
             NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
             myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
         }
-        if (avatar) {
-            [myVcardTemp setPhoto:avatar];
+        if ([_profile objectForKey:@"image"]) {
+            [myVcardTemp setPhoto:[_profile objectForKey:@"image"]];
         }
-        if (nick) {
-            [myVcardTemp setNickname:nick];
+        if ([_profile objectForKey:@"displayName"]) {
+            [myVcardTemp setNickname:[_profile objectForKey:@"displayName"]];
         }
         [self.appDelegate.xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
+        [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     });
 }
 
@@ -314,9 +297,10 @@
         [_profile setObject:pngData forKey:@"image"];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            _profileImage.image  = imageToSave;
-            _profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
-            _profileImage.clipsToBounds = YES;
+            _profileImage.image = imageToSave;
+            if (!_profileImage.superview) {
+                [_takeImage addSubview:_profileImage];
+            }
         });
     });
 }

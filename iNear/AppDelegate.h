@@ -31,5 +31,8 @@ extern NSString* const XmppMessageNotification;
 - (NSManagedObjectContext *)managedObjectContext_roster;
 - (NSManagedObjectContext *)managedObjectContext_capabilities;
 
+- (NSString*)nickNameForUser:(XMPPUserCoreDataStorageObject*)user;
+- (NSData*)photoForUser:(XMPPUserCoreDataStorageObject*)user;
+
 @end
 

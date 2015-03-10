@@ -12,7 +12,7 @@
 #import "ImageView.h"
 #import "ProfileController.h"
 
-@interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *messageButton;
 @property (weak, nonatomic) IBOutlet UITextField *message;
@@ -39,8 +39,11 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
-    self.title = _user.displayName;
+    self.title = [self.appDelegate nickNameForUser:_user];
     _messages = [NSMutableArray new];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:_message action:@selector(resignFirstResponder)];
+    [self.view addGestureRecognizer:tap];
 }
 
 
@@ -60,6 +63,16 @@
     [super viewWillDisappear:animated];
     // Stop listening for keyboard notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [_message resignFirstResponder];
+    [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x,
+                                                           size.height - self.navigationController.toolbar.frame.size.height,
+                                                           self.navigationController.toolbar.frame.size.width,
+                                                           self.navigationController.toolbar.frame.size.height)];
 }
 
 - (void)viewDidLayoutSubviews
@@ -106,7 +119,10 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x, self.navigationController.toolbar.frame.origin.y + (keyboardFrame.size.height * (up ? -1 : 1)), self.navigationController.toolbar.frame.size.width, self.navigationController.toolbar.frame.size.height)];
+    [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x,
+                                                           self.navigationController.toolbar.frame.origin.y + (keyboardFrame.size.height * (up ? -1 : 1)),
+                                                           self.navigationController.toolbar.frame.size.width,
+                                                           self.navigationController.toolbar.frame.size.height)];
     [UIView commitAnimations];
 }
 

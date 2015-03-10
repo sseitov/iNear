@@ -10,9 +10,10 @@
 #import "AppDelegate.h"
 #import "ProfileController.h"
 #import "ChatController.h"
+#import "BadgeView.h"
+#import "IconView.h"
 
 #import "XMPPFramework.h"
-#import "XMPPvCardTemp.h"
 
 #define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
@@ -146,35 +147,29 @@
     
     XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 
+    UILabel *name = (UILabel*)[cell.contentView viewWithTag:1];
+    name.text = [self.appDelegate nickNameForUser:user];
     
-    XMPPvCardTemp *temp = [self.appDelegate.xmppvCardTempModule vCardTempForJID:user.jid shouldFetch:YES];
-    UILabel *displayName = (UILabel*)[cell.contentView viewWithTag:1];
-    if (temp && temp.nickname && temp.nickname.length > 0) {
-        displayName.text = temp.nickname;
-    } else {
-        displayName.text = user.displayName;
-    }
+    IconView* icon = (IconView*)[cell.contentView viewWithTag:2];
+    [icon setIconForUser:user];
     
-    UILabel *shortName = (UILabel*)[cell.contentView viewWithTag:2];
-    shortName.text = @"";
-    
-    UIImageView *icon = (UIImageView*)[cell.contentView viewWithTag:3];
-    if (user.photo) {
-        icon.image = user.photo;
-    } else {
-        NSData *photoData = [[[self appDelegate] xmppvCardAvatarModule] photoDataForJID:user.jid];
-        if (photoData != nil) {
-            icon.image = [UIImage imageWithData:photoData];
-        } else {
-            icon.image = nil;
-            [icon.layer setBackgroundColor:[ProfileController MD5color:displayName.text].CGColor];
-            shortName.text = [[displayName.text substringWithRange:NSMakeRange(0, 2)] uppercaseString];
-        }
-    }
-    icon.layer.cornerRadius = icon.frame.size.width/2;
-    icon.clipsToBounds = YES;
+    BadgeView* badge = (BadgeView*)[cell.contentView viewWithTag:3];
+    [badge setCount:4];
     
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        [[[self appDelegate] xmppRoster] removeUser:user.jid];
+    }
 }
 
 #pragma mark - Navigation

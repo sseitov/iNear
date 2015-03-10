@@ -13,6 +13,7 @@
 #import "XMPPLogging.h"
 #import "DDLog.h"
 #import "DDTTYLogger.h"
+#import "XMPPvCardTemp.h"
 
 #define WAIT(a) [a lock]; [a wait]; [a unlock]
 #define SIGNAL(a) [a lock]; [a signal]; [a unlock]
@@ -74,16 +75,12 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)])
-    {
-        [application setKeepAliveTimeout:600 handler:^{
-            // Do other keep alive stuff here.
-        }];
-    }
+    [self goOffline];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    [self goOnline];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -97,7 +94,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Core Data
+#pragma mark - Core Data
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (NSManagedObjectContext *)managedObjectContext_roster
@@ -111,7 +108,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Private
+#pragma mark - Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)setupStream
@@ -278,8 +275,38 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [[self xmppStream] sendElement:presence];
 }
 
+- (BOOL)connect
+{
+    if (![_xmppStream isDisconnected]) {
+        return YES;
+    }
+    
+    NSDictionary* profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
+    if (!profile) {
+        return NO;
+    }
+    
+    NSString *myJID = [profile objectForKey:@"account"];
+    NSString *myPassword = [profile objectForKey:@"password"];
+    
+    if (myJID == nil || myPassword == nil) {
+        return NO;
+    }
+    
+    [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
+    password = myPassword;
+    
+    return [_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
+}
+
+- (void)disconnect
+{
+    [self goOffline];
+    [_xmppStream disconnect];
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Connect/disconnect
+#pragma mark - Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)connectXmppFromViewController:(UIViewController*)controller result:(void (^)(BOOL))result
@@ -320,38 +347,23 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     });
 }
 
-- (BOOL)connect
+- (NSString*)nickNameForUser:(XMPPUserCoreDataStorageObject*)user
 {
-    if (![_xmppStream isDisconnected]) {
-        return YES;
+    XMPPvCardTemp *temp = [_xmppvCardTempModule vCardTempForJID:user.jid shouldFetch:YES];
+    if (temp && temp.nickname && temp.nickname.length > 0) {
+        return temp.nickname;
+    } else {
+        return user.displayName;
     }
-    
-    NSDictionary* profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (!profile) {
-        return NO;
-    }
-    
-    NSString *myJID = [profile objectForKey:@"account"];
-    NSString *myPassword = [profile objectForKey:@"password"];
-    
-    if (myJID == nil || myPassword == nil) {
-        return NO;
-    }
-    
-    [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
-    password = myPassword;
-    
-    return [_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
 }
 
-- (void)disconnect
+- (NSData*)photoForUser:(XMPPUserCoreDataStorageObject*)user
 {
-    [self goOffline];
-    [_xmppStream disconnect];
+    return [_xmppvCardAvatarModule photoDataForJID:user.jid];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark XMPPStream Delegate
+#pragma mark - XMPPStream Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)xmppStream:(XMPPStream *)sender socketDidConnect:(GCDAsyncSocket *)socket
@@ -434,18 +446,9 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
                                                                   xmppStream:_xmppStream
                                                         managedObjectContext:[self managedObjectContext_roster]];
         
-        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
-        {
-            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification
-                                                                object:user
-                                                              userInfo:@{@"message" : message}];
-        } else {
-            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-            localNotification.alertAction = @"Ok";
-            localNotification.alertBody = [NSString stringWithFormat:@"From: %@", [user displayName]];
-            
-            [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification
+                                                            object:user
+                                                          userInfo:@{@"message" : message}];
     }
 }
 
@@ -471,7 +474,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark XMPPRosterDelegate
+#pragma mark - XMPPRosterDelegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)xmppRoster:(XMPPRoster *)sender didReceiveBuddyRequest:(XMPPPresence *)presence
