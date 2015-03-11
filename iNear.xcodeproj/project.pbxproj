@@ -26,6 +26,7 @@
 		2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC741AAB7D9C0084BE37 /* Camera.m */; };
 		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
 		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
+		2CA8B8931AB063EC005FDB43 /* AddUserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8921AB063EC005FDB43 /* AddUserController.m */; };
 		2CBE1E501AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */; };
 		2CBE1E511AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4F1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m */; };
 		2CBE1E541AAFAB4C000D1E22 /* BadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E531AAFAB4C000D1E22 /* BadgeView.m */; };
@@ -182,6 +183,8 @@
 		2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTDecoder.m; sourceTree = "<group>"; };
 		2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTEncoder.h; sourceTree = "<group>"; };
 		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
+		2CA8B8911AB063EC005FDB43 /* AddUserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserController.h; sourceTree = "<group>"; };
+		2CA8B8921AB063EC005FDB43 /* AddUserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserController.m; sourceTree = "<group>"; };
 		2CBE1E4C1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPMessage+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.h"; sourceTree = "<group>"; };
 		2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPMessage+XEP_0172.m"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.m"; sourceTree = "<group>"; };
 		2CBE1E4E1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPPresence+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPPresence+XEP_0172.h"; sourceTree = "<group>"; };
@@ -596,6 +599,8 @@
 				2CBE1E531AAFAB4C000D1E22 /* BadgeView.m */,
 				2CBE1E561AAFB26D000D1E22 /* IconView.h */,
 				2CBE1E571AAFB26D000D1E22 /* IconView.m */,
+				2CA8B8911AB063EC005FDB43 /* AddUserController.h */,
+				2CA8B8921AB063EC005FDB43 /* AddUserController.m */,
 			);
 			name = ContactsController;
 			sourceTree = "<group>";
@@ -1443,6 +1448,7 @@
 				2CE4ED281AACE8FD000CE97B /* DDLog.m in Sources */,
 				2CC7C0321AAE14300051A250 /* MessageView.m in Sources */,
 				2CE4EE041AACEE39000CE97B /* XMPPTransports.m in Sources */,
+				2CA8B8931AB063EC005FDB43 /* AddUserController.m in Sources */,
 				2CE4ED091AACE84F000CE97B /* XMPPSRVResolver.m in Sources */,
 				2CE4EE401AACEFD4000CE97B /* XMPPAttentionModule.m in Sources */,
 				2CBE1E581AAFB26D000D1E22 /* IconView.m in Sources */,

@@ -47,7 +47,13 @@
     _status.layer.borderWidth = 1.0;
     _status.layer.masksToBounds = YES;
     _status.layer.cornerRadius = 7.0;
-    
+
+    _upload.layer.borderWidth = 1.0;
+    _upload.layer.masksToBounds = YES;
+    _upload.layer.cornerRadius = 7.0;
+    _upload.backgroundColor = [UIColor colorWithRed:28./256. green:79./256. blue:130./256. alpha:1.];
+    _upload.layer.borderColor = _upload.backgroundColor.CGColor;
+
     _profileImage = [[UIImageView alloc] initWithFrame:_takeImage.bounds];
     _profileImage.layer.cornerRadius = _profileImage.frame.size.width/2;
     _profileImage.clipsToBounds = YES;

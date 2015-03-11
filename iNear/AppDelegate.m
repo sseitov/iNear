@@ -58,7 +58,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [[Camera shared] startup];
 
     // Configure logging framework
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
+//    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
     [self setupStream];
 

@@ -12,12 +12,13 @@
 #import "ChatController.h"
 #import "BadgeView.h"
 #import "IconView.h"
+#import "AddUserController.h"
 
 #import "XMPPFramework.h"
 
 #define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
-@interface ContactsController () {
+@interface ContactsController () <AddUserControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
 }
 
@@ -182,7 +183,23 @@
         UINavigationController *vc = [segue destinationViewController];
         ChatController *chat = (ChatController*)vc.topViewController;
         chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    } else if ([[segue identifier] isEqualToString:@"AddUser"]) {
+        UINavigationController *vc = [segue destinationViewController];
+        AddUserController* next = (AddUserController*)vc.topViewController;
+        next.delegate = self;
+        if (IS_PAD) {
+            next.preferredContentSize = CGSizeMake(320, 120);
+        }
     }
+}
+
+- (void)addUserController:(AddUserController*)controller addUser:(NSString*)user
+{
+    if (user.length > 0) {
+        XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", user]];
+        [self.appDelegate.xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user]];
+    }
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - XMPP notifications
@@ -214,23 +231,31 @@
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    UITextField* textField = [alertView textFieldAtIndex:0];
-    XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", textField.text]];
-    [self.appDelegate.xmppRoster addUser:jid withNickname:textField.text];
-}
-
 - (IBAction)addContact:(id)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add user"
-                                                    message:@"Input user jid:"
-                                                   delegate:self
-                                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    UITextField* textField = [alert textFieldAtIndex:0];
-    textField.keyboardType = UIKeyboardTypeEmailAddress;
-    [alert show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:@"Add user with account:"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeEmailAddress;
+        textField.placeholder = @"user@jabber-server.com";
+        textField.textAlignment = NSTextAlignmentCenter;
+        textField.borderStyle = UITextBorderStyleRoundedRect;
+    }];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Ok"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction *action)
+                               {
+                                   UITextField *user = alert.textFields.firstObject;
+                                   XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", user.text]];
+                                   [self.appDelegate.xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user.text]];
+                               }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction *action) {}];
+    [alert addAction:cancelAction];
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

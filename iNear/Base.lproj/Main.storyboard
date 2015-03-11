@@ -21,7 +21,7 @@
             </objects>
             <point key="canvasLocation" x="-2650" y="-112"/>
         </scene>
-        <!--Profile Controller-->
+        <!--My profile-->
         <scene sceneID="3mw-qX-JMa">
             <objects>
                 <viewController id="ak1-ZC-TgB" customClass="ProfileController" sceneMemberID="viewController">
@@ -41,7 +41,8 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
                                 <state key="normal" title="Upload card">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="uploadCard:" destination="ak1-ZC-TgB" eventType="touchUpInside" id="qEe-i7-rna"/>
@@ -111,8 +112,7 @@
                             <constraint firstItem="BqR-C4-F6I" firstAttribute="top" secondItem="wgF-x0-mO3" secondAttribute="bottom" constant="36" id="yVE-e3-UqG"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="LEr-7i-69Q">
-                        <nil key="title"/>
+                    <navigationItem key="navigationItem" title="My profile" id="LEr-7i-69Q">
                         <barButtonItem key="rightBarButtonItem" id="N6j-zN-ke1">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tb5-fH-s0W">
                                 <rect key="frame" x="-23" y="-15" width="133" height="30"/>
@@ -179,7 +179,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Contact" id="kGJ-Ve-Q3b">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="Contact" id="kGJ-Ve-Q3b">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kGJ-Ve-Q3b" id="RoZ-58-gDN">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -240,7 +240,9 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="QWI-mT-Q6p">
                             <connections>
-                                <action selector="addContact:" destination="3iP-Uh-xHS" id="yYB-Gh-VcZ"/>
+                                <segue destination="1By-no-24Y" kind="popoverPresentation" identifier="AddUser" popoverAnchorBarButtonItem="QWI-mT-Q6p" id="McB-Oe-LZd">
+                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                </segue>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -332,6 +334,79 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KjP-mj-2Q4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="138" y="-862"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="RPs-VL-sM6">
+            <objects>
+                <navigationController id="1By-no-24Y" sceneMemberID="viewController">
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="160"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="WQg-hx-aim">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="04f-Qp-zKQ" kind="relationship" relationship="rootViewController" id="dnG-u4-NVt"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qhP-7z-RKx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-678" y="-1355"/>
+        </scene>
+        <!--Add User-->
+        <scene sceneID="Iag-S5-Us6">
+            <objects>
+                <viewController id="04f-Qp-zKQ" customClass="AddUserController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="FGa-iV-E1c"/>
+                        <viewControllerLayoutGuide type="bottom" id="k1w-PT-hnw"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="rCr-gV-rDf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="160"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="user@jabber-server.com" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U3i-rs-c92">
+                                <rect key="frame" x="20" y="110" width="280" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Ghe-sB-HMR"/>
+                                    <constraint firstAttribute="width" constant="280" id="zVr-Ah-1UM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="search"/>
+                                <connections>
+                                    <outlet property="delegate" destination="04f-Qp-zKQ" id="4c2-xy-ueb"/>
+                                </connections>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Input user account:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cUu-SL-qHv">
+                                <rect key="frame" x="24" y="69" width="280" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="Wbh-GI-sbr"/>
+                                    <constraint firstAttribute="width" constant="280" id="kQ4-sY-ACQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="cUu-SL-qHv" secondAttribute="centerX" constant="-4" id="OCR-MB-1y4"/>
+                            <constraint firstAttribute="centerX" secondItem="U3i-rs-c92" secondAttribute="centerX" id="ccZ-uy-PLE"/>
+                            <constraint firstItem="cUu-SL-qHv" firstAttribute="top" secondItem="FGa-iV-E1c" secondAttribute="bottom" constant="25" id="qV0-Ht-vN2"/>
+                            <constraint firstItem="U3i-rs-c92" firstAttribute="top" secondItem="cUu-SL-qHv" secondAttribute="bottom" constant="20" id="vVT-8p-q7t"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Add User" id="giW-BO-XIg"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="160"/>
+                    <connections>
+                        <outlet property="userField" destination="U3i-rs-c92" id="gKm-BR-6xf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AKC-9D-Wzc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-272" y="-1355"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="IPf-JC-AP2">
