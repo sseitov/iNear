@@ -12,6 +12,9 @@
 #import "ImageView.h"
 #import "ProfileController.h"
 #import "Storage.h"
+#import "CallController.h"
+
+#define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
 @interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
 
@@ -52,7 +55,7 @@
 {
     [super viewDidLayoutSubviews];
     
-    _messageButton.width = self.tableView.frame.size.width - 60;
+    _messageButton.width = self.tableView.frame.size.width - 100;
 }
 
 - (void)scrollToBottom
@@ -162,8 +165,25 @@
 
 - (IBAction)clearChat:(id)sender
 {
-    [[Storage sharedInstance] clearChat:_user.displayName];
-    [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Confitmation"
+                                                                             message:@"Yow are really want to clear chat?"
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[Storage sharedInstance] clearChat:_user.displayName];
+        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
+    }];
+    [alertController addAction:yesAction];
+
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDestructive handler:nil];
+    [alertController addAction:noAction];
+
+    if(IS_PAD) {
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:alertController];
+        [popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -321,14 +341,14 @@
     }
 }
 
-/*
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"Call"]) {
+        CallController* next = [segue destinationViewController];
+        next.peer = _user;
+    }
 }
-*/
 
 @end

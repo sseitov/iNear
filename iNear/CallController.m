@@ -11,6 +11,7 @@
 #import "Camera.h"
 #import "VTEncoder.h"
 #import "VTDecoder.h"
+#import "AppDelegate.h"
 
 @interface CallController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
@@ -29,9 +30,16 @@
 
 @implementation CallController
 
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.title = [self.appDelegate nickNameForUser:_peer];
     
     _captureQueue = dispatch_queue_create("com.vchannel.DirectVideo", DISPATCH_QUEUE_SERIAL);
     [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
@@ -43,6 +51,11 @@
     _decoder.delegate = self;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:YES animated:YES];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [self updateFotOrientation:(UIInterfaceOrientation)[[UIDevice currentDevice] orientation]];
@@ -50,7 +63,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
     [self stopCapture];
+    [self.navigationController setToolbarHidden:NO animated:YES];
 }
 
 - (void)updateFotOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -67,7 +82,7 @@
     [self startPreview];
 }
 
-- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [self updateFotOrientation:toInterfaceOrientation];
 }
@@ -80,6 +95,7 @@
     [preview removeFromSuperlayer];
     preview.frame = _selfView.bounds;
     [[preview connection] setVideoOrientation:(AVCaptureVideoOrientation)[[UIDevice currentDevice] orientation]];
+    [_selfView.layer addSublayer:preview];
     
     [self startCapture];
 }
@@ -108,8 +124,6 @@
 
 - (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    [_selfView drawBuffer:sampleBuffer];
-    
     [connection setVideoOrientation:(AVCaptureVideoOrientation)[[UIDevice currentDevice] orientation]];
     CVImageBufferRef pixelBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
     [_encoder encodeBuffer:pixelBuffer];

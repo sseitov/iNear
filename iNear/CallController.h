@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XMPPFramework.h"
 
 @interface CallController : UIViewController
+
+@property (strong, nonatomic) XMPPUserCoreDataStorageObject *peer;
 
 @end

@@ -447,11 +447,8 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     if ([message isChatMessage])
     {
         dispatch_async(dispatch_get_main_queue(), ^() {
-            XMPPUserCoreDataStorageObject *user = [_xmppRosterStorage userForJID:[message from]
-                                                                      xmppStream:_xmppStream
-                                                            managedObjectContext:[self managedObjectContext_roster]];
-            [[Storage sharedInstance] addMessage:message toChat:user.displayName fromMe:NO];
-            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:user];
+            [[Storage sharedInstance] addMessage:message toChat:message.from.bare fromMe:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
         });
     }
 }
