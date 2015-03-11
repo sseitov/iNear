@@ -228,6 +228,8 @@
                                                    delegate:self
                                           cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    UITextField* textField = [alert textFieldAtIndex:0];
+    textField.keyboardType = UIKeyboardTypeEmailAddress;
     [alert show];
 }
 
