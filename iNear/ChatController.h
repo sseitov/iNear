@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "XMPPFramework.h"
 
-@interface ChatController : UITableViewController
+@interface ChatController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) XMPPUserCoreDataStorageObject *user;
 

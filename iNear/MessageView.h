@@ -48,14 +48,14 @@
 */
 
 #import <UIKit/UIKit.h>
-#import "XMPPFramework.h"
+#import "StoreMessage.h"
 
 // TAG used in our custom table view cell to retreive this view
 #define MESSAGE_VIEW_TAG (99)
 
 @interface MessageView : UIView
 
-- (void)setMessage:(XMPPMessage *)message fromMe:(BOOL)fromMe;
-+ (CGFloat)viewHeightForMessage:(XMPPMessage *)message;
+- (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe;
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message;
 
 @end

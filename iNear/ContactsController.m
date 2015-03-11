@@ -13,6 +13,7 @@
 #import "BadgeView.h"
 #import "IconView.h"
 #import "AddUserController.h"
+#import "Storage.h"
 
 #import "XMPPFramework.h"
 
@@ -37,6 +38,7 @@
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSubscribe:) name:XmppSubscribeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMessage:) name:XmppMessageNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -155,7 +157,7 @@
     [icon setIconForUser:user];
     
     BadgeView* badge = (BadgeView*)[cell.contentView viewWithTag:3];
-    [badge setCount:4];
+    [badge setCount:[[Storage sharedInstance] newMessagesCountForUser:user.displayName]];
     
     return cell;
 }
@@ -203,6 +205,11 @@
 }
 
 #pragma mark - XMPP notifications
+
+- (void)handleMessage:(NSNotification*)note
+{
+    [self.tableView reloadData];
+}
 
 - (void)handleSubscribe:(NSNotification*)note
 {

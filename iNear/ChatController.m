@@ -11,14 +11,17 @@
 #import "MessageView.h"
 #import "ImageView.h"
 #import "ProfileController.h"
+#import "Storage.h"
 
 @interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *messageButton;
 @property (weak, nonatomic) IBOutlet UITextField *message;
 
-@property (strong, nonatomic) NSMutableArray *messages;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+
 - (IBAction)sendImage:(id)sender;
+- (IBAction)clearChat:(id)sender;
 
 @end
 
@@ -39,28 +42,44 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
-    self.title = @"Chat";//[self.appDelegate nickNameForUser:_user];
-    _messages = [NSMutableArray new];
+    self.title = @"Chat";
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:_message action:@selector(resignFirstResponder)];
     [self.view addGestureRecognizer:tap];
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    _messageButton.width = self.tableView.frame.size.width - 60;
+}
+
+- (void)scrollToBottom
+{
+    if (self.tableView.contentSize.height > self.tableView.frame.size.height)
+    {
+        CGPoint offset = CGPointMake(0, self.tableView.contentSize.height - self.tableView.frame.size.height + 44);
+        [self.tableView setContentOffset:offset animated:YES];
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMessage:) name:XmppMessageNotification object:nil];
-    
     // Listen for will show/hide notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    [self.tableView reloadData];
+    [self scrollToBottom];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
     // Stop listening for keyboard notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -75,33 +94,8 @@
                                                            self.navigationController.toolbar.frame.size.height)];
 }
 
-- (void)viewDidLayoutSubviews
-{
-    _messageButton.width = self.tableView.frame.size.width - 60;
-}
-
-- (void)addMessage:(XMPPMessage*)message
-{
-    dispatch_async(dispatch_get_main_queue(), ^() {
-        [self.tableView beginUpdates];
-        [_messages addObject:message];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(_messages.count - 1) inSection:0];
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationBottom];
-        [self.tableView endUpdates];
-    });
-}
-
-- (void)handleMessage:(NSNotification*)note
-{
-    XMPPUserCoreDataStorageObject *from = note.object;
-    if ([from isEqual:_user]) {
-        [self addMessage:[note.userInfo objectForKey:@"message"]];
-    }
-}
-
 #pragma mark - Toolbar animation helpers
 
-// Helper method for moving the toolbar frame based on user action
 - (void)moveToolBarUp:(BOOL)up forKeyboardNotification:(NSNotification *)notification
 {
     NSDictionary *userInfo = [notification userInfo];
@@ -154,7 +148,7 @@
     [[self appDelegate].xmppStream sendElement:messageElement];
 
     XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
-    [self addMessage:message];
+    [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
     
     _message.text = @"";
     return YES;
@@ -162,11 +156,14 @@
 
 - (IBAction)sendImage:(id)sender
 {
-    // Preset an action sheet which enables the user to take a new picture or select and existing one.
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"  destructiveButtonTitle:nil otherButtonTitles:@"Take Photo", @"Choose Existing", nil];
-    
-    // Show the action sheet
     [sheet showFromBarButtonItem:sender animated:YES];
+}
+
+- (IBAction)clearChat:(id)sender
+{
+    [[Storage sharedInstance] clearChat:_user.displayName];
+    [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -178,7 +175,6 @@
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     
     if (imagePicker) {
-        // set the delegate and source type, and present the image picker
         imagePicker.delegate = self;
         if (0 == buttonIndex) {
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -230,8 +226,46 @@
         [[self appDelegate].xmppStream sendElement:messageElement];
         
         XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
-        [self addMessage:message];
+        [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
     });
+}
+
+#pragma mark - NSFetchedResultsController
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController == nil)
+    {
+        NSManagedObjectContext *moc = [[Storage sharedInstance] managedObjectContext];
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        fetchRequest.entity = [NSEntityDescription entityForName:@"StoreMessage" inManagedObjectContext:moc];
+        fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES]];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"displayName == %@", _user.displayName];
+        fetchRequest.fetchBatchSize = 50;
+//        fetchRequest.propertiesToFetch = @[@"message", @"attachment", @"isNew", @"fromMe"];
+        
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                       managedObjectContext:moc
+                                                                         sectionNameKeyPath:nil
+                                                                                  cacheName:nil];
+        _fetchedResultsController.delegate = self;
+        
+        NSError *error = nil;
+        if (![_fetchedResultsController performFetch:&error])
+        {
+            NSLog(@"Error performing fetch: %@", error);
+        }
+        
+    }
+    
+    return _fetchedResultsController;
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView reloadData];
+    [self scrollToBottom];
 }
 
 #pragma mark - Table view data source
@@ -243,23 +277,34 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _messages.count;
+    NSArray *sections = [self.fetchedResultsController sections];
+    if (section < sections.count)
+    {
+        id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+        return sectionInfo.numberOfObjects;
+    } else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessage *message = [_messages objectAtIndex:indexPath.row];
-    BOOL fromMe = [message.toStr isEqual:_user.jidStr];
+    StoreMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
     UITableViewCell *cell;
     
-    if ([message isChatMessageWithBody]) {
+    if ([message.isNew boolValue]) {
+        message.isNew = [NSNumber numberWithBool:NO];
+        [[Storage sharedInstance] saveContext];
+        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
+    }
+    if (message.message != nil) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell" forIndexPath:indexPath];
         MessageView *messageView = (MessageView *)[cell viewWithTag:MESSAGE_VIEW_TAG];
-        [messageView setMessage:message fromMe:fromMe];
+        [messageView setMessage:message fromMe:[message.fromMe boolValue]];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ImageCell" forIndexPath:indexPath];
         ImageView *imageView = (ImageView *)[cell viewWithTag:IMAGE_VIEW_TAG];
-        [imageView setMessage:message fromMe:fromMe];
+        [imageView setMessage:message fromMe:[message.fromMe boolValue]];
     }
     
     return cell;
@@ -268,47 +313,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Dynamically compute the label size based on cell type (image, image progress, or text message)
-    XMPPMessage *message = [_messages objectAtIndex:indexPath.row];
-    if ([message isChatMessageWithBody]) {
+    StoreMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (message.message != nil) {
         return [MessageView viewHeightForMessage:message];
     } else {
         return [ImageView viewHeightForMessage:message];
     }
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 /*
 #pragma mark - Navigation

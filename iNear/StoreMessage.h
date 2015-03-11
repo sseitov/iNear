@@ -16,5 +16,7 @@
 @property (nonatomic, retain) NSString * message;
 @property (nonatomic, retain) NSData * attachment;
 @property (nonatomic, retain) NSNumber * isNew;
+@property (nonatomic, retain) NSNumber * fromMe;
+@property (nonatomic, retain) NSDate * date;
 
 @end

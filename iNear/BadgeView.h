@@ -10,6 +10,6 @@
 
 @interface BadgeView : UIImageView
 
-- (void)setCount:(int)count;
+- (void)setCount:(NSUInteger)count;
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "StoreMessage.h"
+#import "XMPPFramework.h"
 
 @interface Storage : NSObject {
 }
@@ -22,5 +23,10 @@
 - (NSManagedObjectContext*)managedObjectContext;
 
 - (void)saveContext;
+
+- (void)addMessage:(XMPPMessage*)message toChat:(NSString*)chatName fromMe:(BOOL)fromMe;
+- (NSUInteger)newMessagesCountForUser:(NSString*)displayName;
+- (NSUInteger)allMessagesCountForUser:(NSString*)displayName;
+- (void)clearChat:(NSString*)chatName;
 
 @end

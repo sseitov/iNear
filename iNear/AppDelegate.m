@@ -57,6 +57,8 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[Camera shared] startup];
+    
+    [[Storage sharedInstance] saveContext];
 
     // Configure logging framework
 //    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
@@ -444,13 +446,13 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 {
     if ([message isChatMessage])
     {
-        XMPPUserCoreDataStorageObject *user = [_xmppRosterStorage userForJID:[message from]
-                                                                  xmppStream:_xmppStream
-                                                        managedObjectContext:[self managedObjectContext_roster]];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification
-                                                            object:user
-                                                          userInfo:@{@"message" : message}];
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            XMPPUserCoreDataStorageObject *user = [_xmppRosterStorage userForJID:[message from]
+                                                                      xmppStream:_xmppStream
+                                                            managedObjectContext:[self managedObjectContext_roster]];
+            [[Storage sharedInstance] addMessage:message toChat:user.displayName fromMe:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:user];
+        });
     }
 }
 

@@ -325,7 +325,13 @@
                             </textField>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ"/>
+                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="dHr-Ok-W18">
+                            <connections>
+                                <action selector="clearChat:" destination="Cu4-pL-fBg" id="euH-ax-MFP"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="message" destination="5yG-PS-vLG" id="3NS-EK-QH9"/>
                         <outlet property="messageButton" destination="UDg-al-9tt" id="CRF-Qe-CK5"/>

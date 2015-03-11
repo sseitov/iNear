@@ -15,5 +15,7 @@
 @dynamic message;
 @dynamic attachment;
 @dynamic isNew;
+@dynamic fromMe;
+@dynamic date;
 
 @end

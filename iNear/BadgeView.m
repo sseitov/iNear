@@ -33,13 +33,13 @@
     _number.frame = self.bounds;
 }
 
-- (void)setCount:(int)count
+- (void)setCount:(NSUInteger)count
 {
     if (count <= 0) {
         _number.text = @"";
         self.hidden = YES;
     } else {
-        _number.text = [NSString stringWithFormat:@"%d", count];
+        _number.text = [[NSNumber numberWithInteger:count] stringValue];
         self.hidden = NO;
     }
 }

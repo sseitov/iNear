@@ -86,15 +86,12 @@
     return self;
 }
 
-- (void)setMessage:(XMPPMessage *)message fromMe:(BOOL)fromMe
+- (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
     _fromMe = fromMe;
     
-    NSString* imageStr = [[message elementForName:@"attachement"] stringValue];
-    NSData *imageData = [[NSData alloc] initWithBase64EncodedString:imageStr options:kNilOptions];
-    UIImage *image = [UIImage imageWithData:imageData];
-    
-    
+    UIImage *image = [UIImage imageWithData:message.attachment];
+        
     _imageView.image = image;
     
     // Get the image size and scale based on our max height (if necessary)
@@ -133,7 +130,7 @@
 
 #pragma - class methods for computing sizes based on strings
 
-+ (CGFloat)viewHeightForMessage:(XMPPMessage *)message
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message
 {
     return (IMAGE_VIEW_HEIGHT_MAX + BUFFER_WHITE_SPACE);
 }

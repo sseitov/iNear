@@ -115,9 +115,9 @@
 }
 
 // Method for setting the transcript object which is used to build this view instance.
-- (void)setMessage:(XMPPMessage *)message fromMe:(BOOL)fromMe
+- (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
-    _messageLabel.text = message.body;
+    _messageLabel.text = message.message;
     _fromMe = fromMe;
     [self setNeedsLayout];
 }
@@ -162,9 +162,9 @@
 
 #pragma - class methods for computing sizes based on strings
 
-+ (CGFloat)viewHeightForMessage:(XMPPMessage *)message
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message
 {
-    CGFloat labelHeight = [MessageView balloonSizeForLabelSize:[MessageView labelSizeForString:message.body fontSize:MESSAGE_FONT_SIZE]].height;
+    CGFloat labelHeight = [MessageView balloonSizeForLabelSize:[MessageView labelSizeForString:message.message fontSize:MESSAGE_FONT_SIZE]].height;
     return (labelHeight + BUFFER_WHITE_SPACE);
 }
 
