@@ -40,8 +40,12 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.view endEditing:YES];
-    [self.delegate addUserController:self addUser:textField.text];
     return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [self.delegate addUserController:self addUser:textField.text];
 }
 
 @end

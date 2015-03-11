@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "Camera.h"
 #import "MBProgressHUD.h"
+#import "Storage.h"
 
 #import "XMPPLogging.h"
 #import "DDLog.h"
@@ -91,6 +92,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 {
     [self disconnect];
     [self teardownStream];
+    [[Storage sharedInstance] saveContext];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
