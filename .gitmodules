@@ -4,6 +4,3 @@
 [submodule "MBProgressHUD"]
 	path = MBProgressHUD
 	url = https://github.com/jdg/MBProgressHUD.git
-[submodule "ARAlertController"]
-	path = ARAlertController
-	url = https://github.com/alexruperez/ARAlertController.git
