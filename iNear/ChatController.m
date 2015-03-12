@@ -46,7 +46,8 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
     self.title = @"Chat";
-    
+    _message.inputAccessoryView = [[UIView alloc] init];
+
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:_message action:@selector(resignFirstResponder)];
     [self.view addGestureRecognizer:tap];
 }
@@ -71,10 +72,6 @@
 {
     [super viewWillAppear:animated];
     
-    // Listen for will show/hide notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    
     [self.tableView reloadData];
     [self scrollToBottom];
 }
@@ -82,57 +79,17 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    // Stop listening for keyboard notifications
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
+/*
 - (void)viewWillTransitionToSize:(CGSize)size
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [_message resignFirstResponder];
     [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x,
                                                            size.height - self.navigationController.toolbar.frame.size.height,
                                                            self.navigationController.toolbar.frame.size.width,
                                                            self.navigationController.toolbar.frame.size.height)];
 }
-
-#pragma mark - Toolbar animation helpers
-
-- (void)moveToolBarUp:(BOOL)up forKeyboardNotification:(NSNotification *)notification
-{
-    NSDictionary *userInfo = [notification userInfo];
-    
-    // Get animation info from userInfo
-    NSTimeInterval animationDuration;
-    UIViewAnimationCurve animationCurve;
-    CGRect keyboardFrame;
-    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
-    
-    // Animate up or down
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    
-    [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x,
-                                                           self.navigationController.toolbar.frame.origin.y + (keyboardFrame.size.height * (up ? -1 : 1)),
-                                                           self.navigationController.toolbar.frame.size.width,
-                                                           self.navigationController.toolbar.frame.size.height)];
-    [UIView commitAnimations];
-}
-
-- (void)keyboardWillShow:(NSNotification *)notification
-{
-    [self moveToolBarUp:YES forKeyboardNotification:notification];
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification
-{
-    [self moveToolBarUp:NO forKeyboardNotification:notification];
-}
-
+*/
 #pragma mark - UITextField delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -294,7 +251,6 @@
         fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES]];
         fetchRequest.predicate = [NSPredicate predicateWithFormat:@"displayName == %@", _user.displayName];
         fetchRequest.fetchBatchSize = 50;
-//        fetchRequest.propertiesToFetch = @[@"message", @"attachment", @"isNew", @"fromMe"];
         
         _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                        managedObjectContext:moc

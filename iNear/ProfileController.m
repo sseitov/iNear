@@ -12,9 +12,6 @@
 #import "Storage.h"
 
 @interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-{
-    UITextField * activeTextField;
-}
 
 @property (weak, nonatomic) IBOutlet UITextField *account;
 @property (weak, nonatomic) IBOutlet UITextField *password;
@@ -73,8 +70,6 @@
         [self handleDisconnected:nil];
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillToggle:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppConnectedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDisconnected:) name:XmppDisconnectedNotification object:nil];
 }
@@ -98,31 +93,6 @@
     _status.backgroundColor = [UIColor colorWithRed:1. green:51./256. blue:51./256. alpha:1.];
     _status.layer.borderColor = _status.backgroundColor.CGColor;
     _upload.enabled = NO;
-}
-
-- (void) keyboardWillToggle:(NSNotification *)aNotification
-{
-    CGRect frame = activeTextField.frame;
-    CGRect keyboard = [[aNotification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    float offset  = keyboard.origin.y - frame.origin.y - frame.size.height - 64 - 20;
-    
-    CGRect rect = self.view.frame;
-    if ([aNotification.name  isEqualToString:@"UIKeyboardWillShowNotification"]) {
-        if (offset > 0) {
-            return;
-        }
-        rect.origin.y += offset;
-    } else {
-        if (rect.origin.y == 64) {
-            return;
-        }
-        rect.origin.y = 64;
-    }
-    
-    float duration = [[aNotification.userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
-    [UIView animateWithDuration:duration animations:^() {
-        self.view.frame = rect;
-    }];
 }
 
 - (void)connectionError
@@ -182,6 +152,7 @@
 
 - (IBAction)uploadCard:(id)sender
 {
+    [Storage setMyNick:_displayName.text];
     dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
     dispatch_async(queue, ^{
         XMPPvCardTemp *myVcardTemp = [self.appDelegate.xmppvCardTempModule myvCardTemp];
@@ -285,7 +256,6 @@
                                    toResolution:128];
         NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
         [Storage setMyImage:pngData];
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image = imageToSave;
             if (!_profileImage.superview) {
@@ -293,22 +263,6 @@
             }
         });
     });
-}
-
-#pragma mark - UITextFieldDelegate methods
-
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    activeTextField = textField;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [self.view endEditing:YES];
-    if (textField == _displayName) {
-        [Storage setMyNick:_displayName.text];
-    }
-    return YES;
 }
 
 @end
