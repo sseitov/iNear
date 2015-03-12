@@ -10,6 +10,4 @@
 
 @interface ProfileController : UIViewController
 
-+ (UIImage *)scaleImage:(UIImage*)image toResolution:(int)resolution;
-
 @end

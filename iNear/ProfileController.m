@@ -259,7 +259,7 @@
 }
 
 // Change image resolution (auto-resize to fit)
-+ (UIImage *)scaleImage:(UIImage*)image toResolution:(int)resolution
+- (UIImage *)scaleImage:(UIImage*)image toResolution:(int)resolution
 {
     CGImageRef imgRef = [image CGImage];
     CGFloat width = CGImageGetWidth(imgRef);
@@ -297,8 +297,8 @@
     // Don't block the UI when writing the image to documents
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         // We only handle a still image
-        UIImage *imageToSave = [ProfileController scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
-                                                toResolution:128];
+        UIImage *imageToSave = [self scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
+                                   toResolution:128];
         NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
         [_profile setObject:pngData forKey:@"image"];
         

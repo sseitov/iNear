@@ -227,10 +227,7 @@
     
     // Don't block the UI when writing the image to documents
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        // We only handle a still image
-        UIImage *imageToSave = [ProfileController scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
-                                                toResolution:128];
-        // Save the new image to the documents directory
+        UIImage *imageToSave = [info objectForKey:UIImagePickerControllerOriginalImage];
         NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
         
         NSString *imgStr = [pngData base64EncodedStringWithOptions:kNilOptions];
@@ -245,8 +242,10 @@
         
         [[self appDelegate].xmppStream sendElement:messageElement];
         
-        XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
-        [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
+            [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
+        });
     });
 }
 
