@@ -149,6 +149,11 @@
     [messageElement addChild:body];
     
     [[self appDelegate].xmppStream sendElement:messageElement];
+    if (!_user.isOnline) {
+        NSString* messageText = [NSString stringWithFormat:@"You have received a message from %@ (%@)",
+                                 [Storage myJid], [Storage myNick]];
+        [self.appDelegate pushMessage:messageText toUser:_user.displayName];
+    }
 
     XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
     [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];

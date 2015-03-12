@@ -92,6 +92,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation addUniqueObject:@"iNear" forKey:@"channels"];
     [currentInstallation saveInBackground];
 }
 
@@ -116,6 +117,11 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = 0;
+        [currentInstallation saveEventually];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -313,15 +319,10 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
         return YES;
     }
     
-    NSDictionary* profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (!profile) {
-        return NO;
-    }
+    NSString *myJID = [Storage myJid];
+    NSString *myPassword = [Storage myPassword];
     
-    NSString *myJID = [profile objectForKey:@"account"];
-    NSString *myPassword = [profile objectForKey:@"password"];
-    
-    if (myJID == nil || myPassword == nil) {
+    if (myJID.length == 0 || myPassword.length == 0) {
         return NO;
     }
     
@@ -356,6 +357,10 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
             [MBProgressHUD hideHUDForView:controller.view animated:YES];
             if (isXmppConnected) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:XmppConnectedNotification object:nil];
+            }
+            if (isXmppConnected) {
+                [PFInstallation currentInstallation][@"jabber"] = [Storage myJid];
+                [[PFInstallation currentInstallation] saveInBackground];
             }
             result(isXmppConnected);
         });
@@ -559,6 +564,23 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
 {
     return YES;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Push notifications
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)pushMessage:(NSString*)message toUser:(NSString*)user
+{
+    // Build a query to match user
+    PFQuery *query = [PFUser query];
+    [query whereKey:@"jabber" equalTo:user];
+    
+    NSDictionary *data = @{@"alert" : message, @"badge" : @"Increment", @"sound": @"default"};
+    PFPush *push = [[PFPush alloc] init];
+    [push setQuery:query];
+    [push setData:data];
+    [push sendPushInBackground];
 }
 
 @end

@@ -34,5 +34,7 @@ extern NSString* const XmppMessageNotification;
 - (NSString*)nickNameForUser:(XMPPUserCoreDataStorageObject*)user;
 - (NSData*)photoForUser:(XMPPUserCoreDataStorageObject*)user;
 
+- (void)pushMessage:(NSString*)message toUser:(NSString*)user;
+
 @end
 

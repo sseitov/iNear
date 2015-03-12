@@ -9,6 +9,7 @@
 #import "ProfileController.h"
 #import "AppDelegate.h"
 #import "XMPPvCardTemp.h"
+#import "Storage.h"
 
 @interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
@@ -26,7 +27,6 @@
 - (IBAction)connect:(id)sender;
 - (IBAction)uploadCard:(id)sender;
 
-@property (strong, nonatomic) NSMutableDictionary *profile;
 @property (strong, nonatomic) UIImageView *profileImage;
 
 @end
@@ -58,21 +58,14 @@
     _profileImage.layer.cornerRadius = _profileImage.frame.size.width/2;
     _profileImage.clipsToBounds = YES;
     
-    NSDictionary * dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (dict) {
-        _profile = [NSMutableDictionary dictionaryWithDictionary:dict];
-    } else {
-        _profile = [NSMutableDictionary new];
-    }
-    
-    NSData* imageData = [_profile objectForKey:@"image"];
+    NSData* imageData = [Storage myImage];
     if (imageData) {
         _profileImage.image = [UIImage imageWithData:imageData];
         [_takeImage addSubview:_profileImage];
     }
-    _account.text = [_profile objectForKey:@"account"];
-    _password.text = [_profile objectForKey:@"password"];
-    _displayName.text = [_profile objectForKey:@"displayName"];
+    _account.text = [Storage myJid];
+    _password.text = [Storage myPassword];
+    _displayName.text = [Storage myNick];
     
     if ([self.appDelegate isXMPPConnected]) {
         [self handleConnected:nil];
@@ -144,38 +137,33 @@
 - (void)doConnect
 {
     if (_account.text && _password.text) {
-        [_profile setObject:_account.text forKey:@"account"];
-        [_profile setObject:_password.text forKey:@"password"];
+        [Storage setMyJid:_account.text];
+        [Storage setMyPassword:_password.text];
     } else {
         [self connectionError];
         return;
     }
-    [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     
     
     [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
         if (!result) {
             [self connectionError];
         } else {
-            
             XMPPvCardTemp *myVcardTemp = [self.appDelegate.xmppvCardTempModule myvCardTemp];
             if (myVcardTemp) {
                 NSData* imageData = myVcardTemp.photo;
-                if (imageData && [_profile objectForKey:@"image"] == nil) {
+                if (imageData && [Storage myImage] == nil) {
                     _profileImage.image = [UIImage imageWithData:imageData];
                     if (!_profileImage.superview) {
                         [_takeImage addSubview:_profileImage];
                     }
-                    [_profile setObject:imageData forKey:@"image"];
+                    [Storage setMyImage:imageData];
                 }
                 NSString* nick = myVcardTemp.nickname;
-                if (nick && [_profile objectForKey:@"displayName"] == nil) {
+                if (nick && [[Storage myNick] isEqual:@""]) {
                     _displayName.text = nick;
-                    [_profile setObject:nick forKey:@"displayName"];
+                    [Storage setMyNick:nick];
                 }
-                [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
             }
         }
     }];
@@ -201,15 +189,11 @@
             NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
             myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
         }
-        if ([_profile objectForKey:@"image"]) {
-            [myVcardTemp setPhoto:[_profile objectForKey:@"image"]];
+        if ([Storage myImage]) {
+            [myVcardTemp setPhoto:[Storage myImage]];
         }
-        if ([_profile objectForKey:@"displayName"]) {
-            [myVcardTemp setNickname:[_profile objectForKey:@"displayName"]];
-        }
+        [myVcardTemp setNickname:[Storage myNick]];
         [self.appDelegate.xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
-        [[NSUserDefaults standardUserDefaults] setObject:_profile forKey:@"profile"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     });
 }
 
@@ -300,7 +284,7 @@
         UIImage *imageToSave = [self scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
                                    toResolution:128];
         NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
-        [_profile setObject:pngData forKey:@"image"];
+        [Storage setMyImage:pngData];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image = imageToSave;
@@ -322,7 +306,7 @@
 {
     [self.view endEditing:YES];
     if (textField == _displayName) {
-        [_profile setObject:_displayName.text forKey:@"displayName"];
+        [Storage setMyNick:_displayName.text];
     }
     return YES;
 }
