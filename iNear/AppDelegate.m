@@ -58,7 +58,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[Camera shared] startup];
+//    [[Camera shared] startup];
     
     [[Storage sharedInstance] saveContext];
 

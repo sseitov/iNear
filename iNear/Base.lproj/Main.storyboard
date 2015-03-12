@@ -334,13 +334,7 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ">
-                        <barButtonItem key="rightBarButtonItem" image="video-call" id="ro9-jq-g7q">
-                            <connections>
-                                <segue destination="T5Z-34-eg0" kind="show" identifier="Call" id="JG0-fB-RAz"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ"/>
                     <connections>
                         <outlet property="message" destination="5yG-PS-vLG" id="3NS-EK-QH9"/>
                         <outlet property="messageButton" destination="UDg-al-9tt" id="CRF-Qe-CK5"/>
@@ -362,7 +356,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NE6-Hb-SOu" customClass="VideoLayerView">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NE6-Hb-SOu" customClass="VideoLayerView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -499,7 +493,6 @@
         <image name="person" width="200" height="200"/>
         <image name="settings" width="22" height="22"/>
         <image name="switch-camera" width="28" height="28"/>
-        <image name="video-call" width="28" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ATH-xB-zGe"/>
