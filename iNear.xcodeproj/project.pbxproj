@@ -30,6 +30,16 @@
 		2CA8B8971AB07318005FDB43 /* MessageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8951AB07318005FDB43 /* MessageModel.xcdatamodeld */; };
 		2CA8B89D1AB074D3005FDB43 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B89C1AB074D3005FDB43 /* Storage.m */; };
 		2CA8B8D81AB08065005FDB43 /* StoreMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8D71AB08065005FDB43 /* StoreMessage.m */; };
+		2CB7370F1AB180920033FB30 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB7370E1AB180920033FB30 /* AudioToolbox.framework */; };
+		2CB737111AB180A70033FB30 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737101AB180A70033FB30 /* CoreLocation.framework */; };
+		2CB737131AB180BA0033FB30 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737121AB180BA0033FB30 /* MobileCoreServices.framework */; };
+		2CB737151AB180CF0033FB30 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737141AB180CF0033FB30 /* QuartzCore.framework */; };
+		2CB737171AB180E70033FB30 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737161AB180E70033FB30 /* StoreKit.framework */; };
+		2CB737191AB180F70033FB30 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737181AB180F70033FB30 /* SystemConfiguration.framework */; };
+		2CB7371B1AB1810B0033FB30 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB7371A1AB1810B0033FB30 /* libz.dylib */; };
+		2CB7371D1AB181200033FB30 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB7371C1AB181200033FB30 /* libsqlite3.dylib */; };
+		2CB7371F1AB181760033FB30 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB7371E1AB181760033FB30 /* Parse.framework */; };
+		2CB737211AB182550033FB30 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB737201AB182550033FB30 /* Bolts.framework */; };
 		2CBE1E501AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */; };
 		2CBE1E511AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E4F1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.m */; };
 		2CBE1E541AAFAB4C000D1E22 /* BadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CBE1E531AAFAB4C000D1E22 /* BadgeView.m */; };
@@ -193,6 +203,16 @@
 		2CA8B89C1AB074D3005FDB43 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; };
 		2CA8B8D61AB08065005FDB43 /* StoreMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreMessage.h; sourceTree = "<group>"; };
 		2CA8B8D71AB08065005FDB43 /* StoreMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreMessage.m; sourceTree = "<group>"; };
+		2CB7370E1AB180920033FB30 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		2CB737101AB180A70033FB30 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		2CB737121AB180BA0033FB30 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		2CB737141AB180CF0033FB30 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2CB737161AB180E70033FB30 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		2CB737181AB180F70033FB30 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		2CB7371A1AB1810B0033FB30 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		2CB7371C1AB181200033FB30 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		2CB7371E1AB181760033FB30 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../../../../../Users/sseitov/Documents/SDK/parse/Parse.framework; sourceTree = "<group>"; };
+		2CB737201AB182550033FB30 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../../../../Users/sseitov/Documents/SDK/parse/Bolts.framework; sourceTree = "<group>"; };
 		2CBE1E4C1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPMessage+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.h"; sourceTree = "<group>"; };
 		2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPMessage+XEP_0172.m"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.m"; sourceTree = "<group>"; };
 		2CBE1E4E1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPPresence+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPPresence+XEP_0172.h"; sourceTree = "<group>"; };
@@ -460,8 +480,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE4ED4A1AACEA2F000CE97B /* libidn.a in Frameworks */,
+				2CB7371D1AB181200033FB30 /* libsqlite3.dylib in Frameworks */,
+				2CB7371B1AB1810B0033FB30 /* libz.dylib in Frameworks */,
 				2CE4ED481AACEA1A000CE97B /* libxml2.dylib in Frameworks */,
 				2CE4ED461AACEA0A000CE97B /* libresolv.dylib in Frameworks */,
+				2CB737211AB182550033FB30 /* Bolts.framework in Frameworks */,
+				2CB7371F1AB181760033FB30 /* Parse.framework in Frameworks */,
+				2CB737191AB180F70033FB30 /* SystemConfiguration.framework in Frameworks */,
+				2CB737171AB180E70033FB30 /* StoreKit.framework in Frameworks */,
+				2CB737151AB180CF0033FB30 /* QuartzCore.framework in Frameworks */,
+				2CB737131AB180BA0033FB30 /* MobileCoreServices.framework in Frameworks */,
+				2CB737111AB180A70033FB30 /* CoreLocation.framework in Frameworks */,
+				2CB7370F1AB180920033FB30 /* AudioToolbox.framework in Frameworks */,
 				2CE4ED441AACE9E6000CE97B /* CFNetwork.framework in Frameworks */,
 				2CE4ED421AACE9D5000CE97B /* Security.framework in Frameworks */,
 				2CE4ED401AACE9C6000CE97B /* CoreData.framework in Frameworks */,
@@ -541,6 +571,16 @@
 				2CE4ED491AACEA2F000CE97B /* libidn.a */,
 				2CE4ED471AACEA1A000CE97B /* libxml2.dylib */,
 				2CE4ED451AACEA0A000CE97B /* libresolv.dylib */,
+				2CB7371C1AB181200033FB30 /* libsqlite3.dylib */,
+				2CB7371A1AB1810B0033FB30 /* libz.dylib */,
+				2CB737201AB182550033FB30 /* Bolts.framework */,
+				2CB7371E1AB181760033FB30 /* Parse.framework */,
+				2CB737181AB180F70033FB30 /* SystemConfiguration.framework */,
+				2CB737161AB180E70033FB30 /* StoreKit.framework */,
+				2CB737141AB180CF0033FB30 /* QuartzCore.framework */,
+				2CB737121AB180BA0033FB30 /* MobileCoreServices.framework */,
+				2CB737101AB180A70033FB30 /* CoreLocation.framework */,
+				2CB7370E1AB180920033FB30 /* AudioToolbox.framework */,
 				2CE4ED431AACE9E6000CE97B /* CFNetwork.framework */,
 				2CE4ED411AACE9D5000CE97B /* Security.framework */,
 				2CE4ED3F1AACE9C6000CE97B /* CoreData.framework */,
@@ -1593,6 +1633,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
+					/Users/sseitov/Documents/SDK/parse,
 				);
 				GCC_PREFIX_HEADER = iNear_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
@@ -1620,6 +1661,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
+					/Users/sseitov/Documents/SDK/parse,
 				);
 				GCC_PREFIX_HEADER = iNear_Prefix.pch;
 				HEADER_SEARCH_PATHS = (

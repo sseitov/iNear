@@ -68,7 +68,7 @@ void CompressionDataCallbackHandler(void *outputCallbackRefCon,
     OSStatus err = VTCompressionSessionEncodeFrame(_session, buffer, presentationTimeStamp, duration,
                                                    NULL, NULL, &infoFlagsOut);
     if (err != noErr) {
-        NSLog(@"error comression session %d", err);
+        NSLog(@"error comression session %d", (int)err);
     } else {
         VTCompressionSessionCompleteFrames(_session, kCMTimeInvalid);
         _numFrames++;

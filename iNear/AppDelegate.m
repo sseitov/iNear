@@ -16,6 +16,8 @@
 #import "DDTTYLogger.h"
 #import "XMPPvCardTemp.h"
 
+#import <Parse/Parse.h>
+
 #define WAIT(a) [a lock]; [a wait]; [a unlock]
 #define SIGNAL(a) [a lock]; [a signal]; [a unlock]
 
@@ -60,6 +62,19 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     
     [[Storage sharedInstance] saveContext];
 
+    [Parse setApplicationId:@"Azz7OQsCDOQNp1Fjw7JbzXRxg1qhOcnWgFxUzYty"
+                  clientKey:@"utsSMDqCgOy8IPgTIaL0OefzBtrz8ajMNRPtlSHL"];
+    
+    // Register for Push Notitications
+    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+                                                    UIUserNotificationTypeBadge |
+                                                    UIUserNotificationTypeSound);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+                                                                             categories:nil];
+    
+    [application registerUserNotificationSettings:settings];
+    [application registerForRemoteNotifications];
+    
     // Configure logging framework
 //    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
@@ -70,6 +85,19 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     _splitViewController.delegate = self;
     
     return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [PFPush handlePush:userInfo];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
