@@ -150,9 +150,7 @@
     
     [[self appDelegate].xmppStream sendElement:messageElement];
     if (!_user.isOnline) {
-        NSString* messageText = [NSString stringWithFormat:@"You have received a message from %@ (%@)",
-                                 [Storage myJid], [Storage myNick]];
-        [self.appDelegate pushMessage:messageText toUser:_user.displayName];
+        [self.appDelegate pushMessageToUser:_user.displayName];
     }
 
     XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
@@ -226,16 +224,43 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (UIImage *)imageFitToSize:(UIImage *)image
+{
+    static float MAX_SIZE = 200.;
+    CGSize size = image.size;
+    CGSize newSize = size;
+    if (size.width >= size.height) {
+        float aspect = size.height / size.width;
+        if (size.width > MAX_SIZE) {
+            newSize.width = MAX_SIZE;
+            newSize.height = newSize.width * aspect;
+        }
+    } else {
+        float aspect = size.width / size.height;
+        if (size.height > MAX_SIZE) {
+            newSize.height = MAX_SIZE;
+            newSize.width = newSize.height * aspect;
+        }
+    }
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [picker dismissViewControllerAnimated:YES completion:nil];
     
     // Don't block the UI when writing the image to documents
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        UIImage *imageToSave = [info objectForKey:UIImagePickerControllerOriginalImage];
-        NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
-        
-        NSString *imgStr = [pngData base64EncodedStringWithOptions:kNilOptions];
+        UIImage *imageToSave = [self imageFitToSize:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        NSData *jpegData = UIImageJPEGRepresentation(imageToSave, 0.2);
+        NSString *imgStr = [jpegData base64EncodedStringWithOptions:kNilOptions];
         
         NSXMLElement *ImgAttachement = [NSXMLElement elementWithName:@"attachement"];
         [ImgAttachement setStringValue:imgStr];
@@ -246,7 +271,9 @@
         [messageElement addChild:ImgAttachement];
         
         [[self appDelegate].xmppStream sendElement:messageElement];
-        
+        if (!_user.isOnline) {
+            [self.appDelegate pushMessageToUser:_user.displayName];
+        }
         dispatch_async(dispatch_get_main_queue(), ^() {
             XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
             [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];

@@ -76,7 +76,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [application registerForRemoteNotifications];
     
     // Configure logging framework
-//    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
+    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
     [self setupStream];
 
@@ -570,12 +570,12 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 #pragma mark - Push notifications
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)pushMessage:(NSString*)message toUser:(NSString*)user
+- (void)pushMessageToUser:(NSString*)user
 {
     // Build a query to match user
     PFQuery *query = [PFUser query];
     [query whereKey:@"jabber" equalTo:user];
-    
+    NSString *message = [NSString stringWithFormat:@"You have received a message from %@ (%@)", [Storage myJid], [Storage myNick]];
     NSDictionary *data = @{@"alert" : message, @"badge" : @"Increment", @"sound": @"default"};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];
