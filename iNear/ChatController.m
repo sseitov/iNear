@@ -47,9 +47,19 @@
 
     self.title = @"Chat";
     _message.inputAccessoryView = [[UIView alloc] init];
-
+/*
+    if (!IS_PAD) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Contacts"
+                                                                                 style:UIBarButtonItemStylePlain
+                                                                                target:self
+                                                                                action:@selector(goBack)];
+    }*/
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:_message action:@selector(resignFirstResponder)];
     [self.view addGestureRecognizer:tap];
+}
+
+- (void)goBack
+{
 }
 
 - (void)viewDidLayoutSubviews

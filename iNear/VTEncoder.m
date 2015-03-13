@@ -62,16 +62,18 @@ void CompressionDataCallbackHandler(void *outputCallbackRefCon,
 
 - (void)encodeBuffer:(CVImageBufferRef)buffer
 {
-    CMTime presentationTimeStamp = CMTimeMake(_numFrames, 1000.0);
-    CMTime duration = CMTimeMake(1, 25);
-    VTEncodeInfoFlags infoFlagsOut;
-    OSStatus err = VTCompressionSessionEncodeFrame(_session, buffer, presentationTimeStamp, duration,
-                                                   NULL, NULL, &infoFlagsOut);
-    if (err != noErr) {
-        NSLog(@"error comression session %d", (int)err);
-    } else {
-        VTCompressionSessionCompleteFrames(_session, kCMTimeInvalid);
-        _numFrames++;
+    if (self.isOpened) {
+        CMTime presentationTimeStamp = CMTimeMake(_numFrames, 1000.0);
+        CMTime duration = CMTimeMake(1, 25);
+        VTEncodeInfoFlags infoFlagsOut;
+        OSStatus err = VTCompressionSessionEncodeFrame(_session, buffer, presentationTimeStamp, duration,
+                                                       NULL, NULL, &infoFlagsOut);
+        if (err != noErr) {
+            NSLog(@"error comression session %d", (int)err);
+        } else {
+            VTCompressionSessionCompleteFrames(_session, kCMTimeInvalid);
+            _numFrames++;
+        }
     }
 }
 

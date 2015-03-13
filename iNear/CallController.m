@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet VideoLayerView *peerView;
 
 - (IBAction)switchCamera:(id)sender;
+- (IBAction)endCall:(id)sender;
 
 @property (strong, nonatomic) VTEncoder* encoder;
 @property (strong, nonatomic) VTDecoder* decoder;
@@ -63,8 +64,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
-    [self stopCapture];
     [self.navigationController setToolbarHidden:NO animated:YES];
 }
 
@@ -118,6 +117,13 @@
     [self stopCapture];
     [[Camera shared] switchCamera];
     [self startCapture];
+}
+
+- (IBAction)endCall:(id)sender
+{
+    [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
+    [self stopCapture];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate

@@ -655,6 +655,7 @@
 			children = (
 				2CA8B8941AB072E2005FDB43 /* Storage */,
 				2CBE1E551AAFB22C000D1E22 /* ContactsController */,
+				2C76258D1AB2C17E00D0AAEE /* Video Call */,
 				2C45FC7C1AAB8C200084BE37 /* Chat */,
 				2C2786761AA8A28B00D7F014 /* AppDelegate.h */,
 				2C2786771AA8A28B00D7F014 /* AppDelegate.m */,
@@ -719,7 +720,6 @@
 		2C45FC7C1AAB8C200084BE37 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				2C4814E01AAC6AB300437453 /* Video */,
 				2CC7C0331AAE40BA0051A250 /* ImageView.h */,
 				2CC7C0341AAE40BA0051A250 /* ImageView.m */,
 				2CC7C0301AAE14300051A250 /* MessageView.h */,
@@ -730,7 +730,7 @@
 			name = Chat;
 			sourceTree = "<group>";
 		};
-		2C4814E01AAC6AB300437453 /* Video */ = {
+		2C76258D1AB2C17E00D0AAEE /* Video Call */ = {
 			isa = PBXGroup;
 			children = (
 				2C45FC661AAB69820084BE37 /* CallController.h */,
@@ -746,7 +746,7 @@
 				2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */,
 				2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */,
 			);
-			name = Video;
+			name = "Video Call";
 			sourceTree = "<group>";
 		};
 		2CA8B8941AB072E2005FDB43 /* Storage */ = {

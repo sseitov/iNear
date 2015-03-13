@@ -28,8 +28,6 @@
     NSCondition *connectCondition;
 }
 
-@property (weak, nonatomic) UISplitViewController *splitViewController;
-
 @property (nonatomic, strong, readonly) XMPPReconnect *xmppReconnect;
 @property (nonatomic, strong, readonly) XMPPRosterCoreDataStorage *xmppRosterStorage;
 @property (nonatomic, strong, readonly) XMPPvCardCoreDataStorage *xmppvCardStorage;
@@ -58,7 +56,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    [[Camera shared] startup];
+    [[Camera shared] startup];
     
     [[Storage sharedInstance] saveContext];
 
@@ -564,6 +562,11 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
 {
     return YES;
+}
+
+- (UIBarButtonItem*)displayModeButton
+{
+    return _splitViewController.displayModeButtonItem;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
