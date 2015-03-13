@@ -17,8 +17,6 @@
 
 #import "XMPPFramework.h"
 
-#define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
-
 @interface ContactsController () <AddUserControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
 }
@@ -29,22 +27,18 @@
 
 @implementation ContactsController
 
-- (AppDelegate *)appDelegate
-{
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSubscribe:) name:XmppSubscribeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMessage:) name:XmppMessageNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (![self.appDelegate isXMPPConnected]) {
-        [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
+    if (![[AppDelegate sharedInstance] isXMPPConnected]) {
+        [[AppDelegate sharedInstance] connectXmppFromViewController:self result:^(BOOL result) {
             if (!result) {
                 [self performSegueWithIdentifier:@"MyProfile" sender:self];
             }
@@ -65,7 +59,7 @@
 {
     if (fetchedResultsController == nil)
     {
-        NSManagedObjectContext *moc = [[self appDelegate] managedObjectContext_roster];
+        NSManagedObjectContext *moc = [[AppDelegate sharedInstance] managedObjectContext_roster];
         
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
                                                   inManagedObjectContext:moc];
@@ -151,7 +145,7 @@
     XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 
     UILabel *name = (UILabel*)[cell.contentView viewWithTag:1];
-    name.text = [self.appDelegate nickNameForUser:user];
+    name.text = [[AppDelegate sharedInstance] nickNameForUser:user];
     
     IconView* icon = (IconView*)[cell.contentView viewWithTag:2];
     [icon setIconForUser:user];
@@ -171,7 +165,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[[self appDelegate] xmppRoster] removeUser:user.jid];
+        [[AppDelegate sharedInstance].xmppRoster removeUser:user.jid];
     }
 }
 
@@ -182,6 +176,7 @@
     if ([[segue identifier] isEqualToString:@"Chat"]) {
         UITableViewCell* cell = sender;
         NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         UINavigationController *vc = [segue destinationViewController];
         ChatController *chat = (ChatController*)vc.topViewController;
         chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
@@ -189,7 +184,7 @@
         UINavigationController *vc = [segue destinationViewController];
         AddUserController* next = (AddUserController*)vc.topViewController;
         next.delegate = self;
-        if (IS_PAD) {
+        if ([AppDelegate isPad]) {
             next.preferredContentSize = CGSizeMake(320, 120);
         }
     }
@@ -199,7 +194,7 @@
 {
     if (user.length > 0) {
         XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", user]];
-        [self.appDelegate.xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user]];
+        [[AppDelegate sharedInstance].xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user]];
     }
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
@@ -220,17 +215,17 @@
     UIAlertAction *accept = [UIAlertAction actionWithTitle:@"Accept"
                                                      style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction *action) {
-                                                       [self.appDelegate.xmppRoster acceptPresenceSubscriptionRequestFrom:[presence from] andAddToRoster:YES];
+                                                       [[AppDelegate sharedInstance].xmppRoster acceptPresenceSubscriptionRequestFrom:[presence from] andAddToRoster:YES];
                                                    }];
     [alertController addAction:accept];
     UIAlertAction *reject = [UIAlertAction actionWithTitle:@"Reject"
                                                      style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction *action) {
-                                                       [self.appDelegate.xmppRoster rejectPresenceSubscriptionRequestFrom:[presence from]];
+                                                       [[AppDelegate sharedInstance].xmppRoster rejectPresenceSubscriptionRequestFrom:[presence from]];
                                                    }];
     [alertController addAction:reject];
 
-    if(IS_PAD) {
+    if([AppDelegate isPad]) {
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:alertController];
         [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
@@ -255,7 +250,7 @@
                                {
                                    UITextField *user = alert.textFields.firstObject;
                                    XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", user.text]];
-                                   [self.appDelegate.xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user.text]];
+                                   [[AppDelegate sharedInstance].xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user.text]];
                                }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
                                                            style:UIAlertActionStyleCancel

@@ -7,8 +7,7 @@
 //
 
 #import "AddUserController.h"
-
-#define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+#import "AppDelegate.h"
 
 @interface AddUserController () <UITextFieldDelegate>
 
@@ -21,7 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (!IS_PAD) {
+    if (![AppDelegate isPad]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                               target:self
                                                                                               action:@selector(cancel)];

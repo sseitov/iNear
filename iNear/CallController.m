@@ -31,16 +31,11 @@
 
 @implementation CallController
 
-- (AppDelegate *)appDelegate
-{
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.title = [self.appDelegate nickNameForUser:_peer];
+    self.title = [[AppDelegate sharedInstance] nickNameForUser:_peer];
     
     _captureQueue = dispatch_queue_create("com.vchannel.DirectVideo", DISPATCH_QUEUE_SERIAL);
     [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];

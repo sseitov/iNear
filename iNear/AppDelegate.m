@@ -10,6 +10,7 @@
 #import "Camera.h"
 #import "MBProgressHUD.h"
 #import "Storage.h"
+#import "ChatController.h"
 
 #import "XMPPLogging.h"
 #import "DDLog.h"
@@ -54,6 +55,16 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     return isXmppConnected;
 }
 
++ (AppDelegate*)sharedInstance
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
++ (BOOL)isPad
+{
+    return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[Camera shared] startup];
@@ -81,7 +92,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     _splitViewController = (UISplitViewController *)self.window.rootViewController;
     _splitViewController.presentsWithGesture = NO;
     _splitViewController.delegate = self;
-    
+
     return YES;
 }
 
@@ -479,7 +490,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     {
         dispatch_async(dispatch_get_main_queue(), ^() {
             [[Storage sharedInstance] addMessage:message toChat:message.from.bare fromMe:NO];
-            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:message.from];
         });
     }
 }
@@ -567,6 +578,25 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 - (UIBarButtonItem*)displayModeButton
 {
     return _splitViewController.displayModeButtonItem;
+}
+
+- (BOOL)splitViewController:(UISplitViewController *)splitViewController
+   showDetailViewController:(UIViewController *)vc
+                     sender:(id)sender
+{
+    if (splitViewController.collapsed) {
+        UIViewController *secondViewController =  nil;
+        if([vc isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *secondNavigationController = (UINavigationController*)vc;
+            secondViewController = [secondNavigationController topViewController];
+        } else {
+            secondViewController = vc;
+        }
+        UINavigationController* master = (UINavigationController*)splitViewController.viewControllers[0];
+        [master pushViewController:secondViewController animated:YES];
+        return YES;
+    }
+    return NO;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

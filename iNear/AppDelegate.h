@@ -20,6 +20,9 @@ extern NSString* const XmppMessageNotification;
 @property (strong, nonatomic) UIWindow *window;
 @property (weak, nonatomic) UISplitViewController *splitViewController;
 
++ (AppDelegate*)sharedInstance;
++ (BOOL)isPad;
+
 - (void)connectXmppFromViewController:(UIViewController*)controller result:(void (^)(BOOL))result;
 - (void)disconnectXmppFromViewController:(UIViewController*)controller result:(void (^)())complete;
 - (BOOL)isXMPPConnected;

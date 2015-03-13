@@ -11,14 +11,14 @@
 #import "XMPPvCardTemp.h"
 #import "Storage.h"
 
-@interface ProfileController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ProfileController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *account;
 @property (weak, nonatomic) IBOutlet UITextField *password;
 @property (weak, nonatomic) IBOutlet UITextField *displayName;
-@property (weak, nonatomic) IBOutlet UIButton *status;
 @property (weak, nonatomic) IBOutlet UIButton *upload;
 @property (weak, nonatomic) IBOutlet UIButton *takeImage;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *status;
 
 - (IBAction)takePhoto:(id)sender;
 - (IBAction)connect:(id)sender;
@@ -30,20 +30,16 @@
 
 @implementation ProfileController
 
-- (AppDelegate *)appDelegate
-{
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.navigationItem.leftBarButtonItem = nil;
-    
-    _status.layer.borderWidth = 1.0;
-    _status.layer.masksToBounds = YES;
-    _status.layer.cornerRadius = 7.0;
+    if (![AppDelegate isPad]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                                 style:UIBarButtonItemStylePlain
+                                                                                target:self
+                                                                                action:@selector(goBack)];
+    }
 
     _upload.layer.borderWidth = 1.0;
     _upload.layer.masksToBounds = YES;
@@ -64,14 +60,22 @@
     _password.text = [Storage myPassword];
     _displayName.text = [Storage myNick];
     
-    if ([self.appDelegate isXMPPConnected]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppConnectedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDisconnected:) name:XmppDisconnectedNotification object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if ([[AppDelegate sharedInstance] isXMPPConnected]) {
         [self handleConnected:nil];
     } else {
         [self handleDisconnected:nil];
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppConnectedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDisconnected:) name:XmppDisconnectedNotification object:nil];
+}
+
+- (void)goBack
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)dealloc
@@ -81,17 +85,13 @@
 
 - (void) handleConnected:(NSNotification *)aNotification
 {
-    [_status setTitle:@"Reconnect" forState:UIControlStateNormal];
-    _status.backgroundColor = [UIColor colorWithRed:28./256. green:79./256. blue:130./256. alpha:1.];
-    _status.layer.borderColor = _status.backgroundColor.CGColor;
+    _status.tintColor = [UIColor whiteColor];
     _upload.enabled = YES;
 }
 
 - (void) handleDisconnected:(NSNotification *)aNotification
 {
-    [_status setTitle:@"Connect" forState:UIControlStateNormal];
-    _status.backgroundColor = [UIColor colorWithRed:1. green:51./256. blue:51./256. alpha:1.];
-    _status.layer.borderColor = _status.backgroundColor.CGColor;
+    _status.tintColor = [UIColor yellowColor];
     _upload.enabled = NO;
 }
 
@@ -115,11 +115,11 @@
     }
     
     
-    [self.appDelegate connectXmppFromViewController:self result:^(BOOL result) {
+    [[AppDelegate sharedInstance] connectXmppFromViewController:self result:^(BOOL result) {
         if (!result) {
             [self connectionError];
         } else {
-            XMPPvCardTemp *myVcardTemp = [self.appDelegate.xmppvCardTempModule myvCardTemp];
+            XMPPvCardTemp *myVcardTemp = [[AppDelegate sharedInstance].xmppvCardTempModule myvCardTemp];
             if (myVcardTemp) {
                 NSData* imageData = myVcardTemp.photo;
                 if (imageData && [Storage myImage] == nil) {
@@ -141,8 +141,8 @@
 
 - (IBAction)connect:(id)sender
 {
-    if ([self.appDelegate isXMPPConnected]) {
-        [[self appDelegate] disconnectXmppFromViewController:self result:^() {
+    if ([[AppDelegate sharedInstance] isXMPPConnected]) {
+        [[AppDelegate sharedInstance] disconnectXmppFromViewController:self result:^() {
             [self doConnect];
         }];
     } else {
@@ -155,7 +155,7 @@
     [Storage setMyNick:_displayName.text];
     dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
     dispatch_async(queue, ^{
-        XMPPvCardTemp *myVcardTemp = [self.appDelegate.xmppvCardTempModule myvCardTemp];
+        XMPPvCardTemp *myVcardTemp = [[AppDelegate sharedInstance].xmppvCardTempModule myvCardTemp];
         if (!myVcardTemp) {
             NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
             myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
@@ -164,7 +164,7 @@
             [myVcardTemp setPhoto:[Storage myImage]];
         }
         [myVcardTemp setNickname:[Storage myNick]];
-        [self.appDelegate.xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
+        [[AppDelegate sharedInstance].xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
     });
 }
 
@@ -263,6 +263,12 @@
             }
         });
     });
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 @end

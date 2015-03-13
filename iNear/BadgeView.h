@@ -10,6 +10,8 @@
 
 @interface BadgeView : UIImageView
 
+- (id)initWithTarget:(id)target action:(SEL)action;
 - (void)setCount:(NSUInteger)count;
+- (void)incrementCount;
 
 @end

@@ -43,11 +43,6 @@ UIColor* MD5color(NSString *toMd5)
 
 @implementation IconView
 
-- (AppDelegate *)appDelegate
-{
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
 - (void)awakeFromNib
 {
     self.clipsToBounds = YES;
@@ -72,12 +67,12 @@ UIColor* MD5color(NSString *toMd5)
     if (user.photo) {
         self.image = user.photo;
     } else {
-        NSData *photoData = [self.appDelegate photoForUser:user];
+        NSData *photoData = [[AppDelegate sharedInstance] photoForUser:user];
         if (photoData != nil) {
             self.image = [UIImage imageWithData:photoData];
         } else {
             self.image = nil;
-            NSString* displayName = [self.appDelegate nickNameForUser:user];
+            NSString* displayName = [[AppDelegate sharedInstance] nickNameForUser:user];
             [self.layer setBackgroundColor:MD5color(displayName).CGColor];
             _shortName.text = [[displayName substringWithRange:NSMakeRange(0, 2)] uppercaseString];
         }

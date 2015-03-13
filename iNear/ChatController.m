@@ -13,14 +13,14 @@
 #import "ProfileController.h"
 #import "Storage.h"
 #import "CallController.h"
-
-#define IS_PAD ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+#import "BadgeView.h"
 
 @interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *messageButton;
 @property (weak, nonatomic) IBOutlet UITextField *message;
 
+@property (strong, nonatomic) BadgeView *badge;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)sendImage:(id)sender;
@@ -30,36 +30,36 @@
 
 @implementation ChatController
 
-- (AppDelegate *)appDelegate
+- (void)dealloc
 {
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
-    self.title = @"Chat";
+    self.title = [[AppDelegate sharedInstance] nickNameForUser:_user];
+    
     _message.inputAccessoryView = [[UIView alloc] init];
-/*
-    if (!IS_PAD) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Contacts"
-                                                                                 style:UIBarButtonItemStylePlain
-                                                                                target:self
-                                                                                action:@selector(goBack)];
-    }*/
+    if (![AppDelegate isPad]) {
+        _badge = [[BadgeView alloc] initWithTarget:self action:@selector(goBack)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_badge];
+    }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:_message action:@selector(resignFirstResponder)];
     [self.view addGestureRecognizer:tap];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMessage:) name:XmppMessageNotification object:nil];
 }
 
 - (void)goBack
 {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidLayoutSubviews
@@ -81,26 +81,21 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    if (![AppDelegate isPad]) {
+        [self.navigationController setToolbarHidden:NO animated:YES];
+        _messageButton.width = self.tableView.frame.size.width - 100;
+    }
     [self.tableView reloadData];
     [self scrollToBottom];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    if (![AppDelegate isPad]) {
+        [self.navigationController setToolbarHidden:YES animated:YES];
+    }
     [super viewWillDisappear:animated];
 }
-/*
-- (void)viewWillTransitionToSize:(CGSize)size
-       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
-    [self.navigationController.toolbar setFrame:CGRectMake(self.navigationController.toolbar.frame.origin.x,
-                                                           size.height - self.navigationController.toolbar.frame.size.height,
-                                                           self.navigationController.toolbar.frame.size.width,
-                                                           self.navigationController.toolbar.frame.size.height)];
-}
-*/
-#pragma mark - UITextField delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -115,9 +110,9 @@
     [messageElement addAttributeWithName:@"to" stringValue:_user.jidStr];
     [messageElement addChild:body];
     
-    [[self appDelegate].xmppStream sendElement:messageElement];
+    [[AppDelegate sharedInstance].xmppStream sendElement:messageElement];
     if (!_user.isOnline) {
-        [self.appDelegate pushMessageToUser:_user.displayName];
+        [[AppDelegate sharedInstance] pushMessageToUser:_user.displayName];
     }
 
     XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
@@ -125,6 +120,16 @@
     
     _message.text = @"";
     return YES;
+}
+
+#pragma mark - XMPP notifications
+
+- (void)handleMessage:(NSNotification*)note
+{
+    XMPPJID* jid = note.object;
+    if (![jid.bare isEqual:_user.jid.bare]) {
+        [_badge incrementCount];
+    }
 }
 
 - (IBAction)sendImage:(id)sender
@@ -141,14 +146,13 @@
     
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [[Storage sharedInstance] clearChat:_user.displayName];
-        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
     }];
     [alertController addAction:yesAction];
 
     UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDestructive handler:nil];
     [alertController addAction:noAction];
 
-    if(IS_PAD) {
+    if([AppDelegate isPad]) {
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:alertController];
         [popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
@@ -237,9 +241,9 @@
         [messageElement addAttributeWithName:@"to" stringValue:_user.jidStr];
         [messageElement addChild:ImgAttachement];
         
-        [[self appDelegate].xmppStream sendElement:messageElement];
+        [[AppDelegate sharedInstance].xmppStream sendElement:messageElement];
         if (!_user.isOnline) {
-            [self.appDelegate pushMessageToUser:_user.displayName];
+            [[AppDelegate sharedInstance] pushMessageToUser:_user.displayName];
         }
         dispatch_async(dispatch_get_main_queue(), ^() {
             XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
@@ -312,7 +316,7 @@
     if ([message.isNew boolValue]) {
         message.isNew = [NSNumber numberWithBool:NO];
         [[Storage sharedInstance] saveContext];
-        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:XmppMessageNotification object:_user.jid];
     }
     if (message.message != nil) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell" forIndexPath:indexPath];
