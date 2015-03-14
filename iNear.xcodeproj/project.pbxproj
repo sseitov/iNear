@@ -30,14 +30,8 @@
 		2C2786A31AA8BB6D00D7F014 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A21AA8BB6D00D7F014 /* CoreGraphics.framework */; };
 		2C2786A71AA8BB8900D7F014 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */; };
 		2C2786AA1AA8BC2E00D7F014 /* PixateFreestyle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */; };
-		2C45FC681AAB69820084BE37 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC671AAB69820084BE37 /* CallController.m */; };
-		2C45FC6B1AAB77F60084BE37 /* DragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC6A1AAB77F60084BE37 /* DragView.m */; };
-		2C45FC6E1AAB7BE90084BE37 /* VideoLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */; };
 		2C45FC701AAB7C330084BE37 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */; };
 		2C45FC721AAB7C650084BE37 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC711AAB7C650084BE37 /* AVFoundation.framework */; };
-		2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC741AAB7D9C0084BE37 /* Camera.m */; };
-		2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */; };
-		2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */; };
 		2CA8B8931AB063EC005FDB43 /* AddUserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8921AB063EC005FDB43 /* AddUserController.m */; };
 		2CA8B8971AB07318005FDB43 /* MessageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8951AB07318005FDB43 /* MessageModel.xcdatamodeld */; };
 		2CA8B89D1AB074D3005FDB43 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B89C1AB074D3005FDB43 /* Storage.m */; };
@@ -220,20 +214,8 @@
 		2C2786A21AA8BB6D00D7F014 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2C2786A61AA8BB8900D7F014 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		2C2786A91AA8BC2E00D7F014 /* PixateFreestyle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PixateFreestyle.framework; path = ../../../../../Users/sseitov/Documents/SDK/PixateFreestyle/PixateFreestyle.framework; sourceTree = "<group>"; };
-		2C45FC661AAB69820084BE37 /* CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallController.h; sourceTree = "<group>"; };
-		2C45FC671AAB69820084BE37 /* CallController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallController.m; sourceTree = "<group>"; };
-		2C45FC691AAB77F60084BE37 /* DragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragView.h; sourceTree = "<group>"; };
-		2C45FC6A1AAB77F60084BE37 /* DragView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragView.m; sourceTree = "<group>"; };
-		2C45FC6C1AAB7BE90084BE37 /* VideoLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLayerView.h; sourceTree = "<group>"; };
-		2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoLayerView.m; sourceTree = "<group>"; };
 		2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		2C45FC711AAB7C650084BE37 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		2C45FC731AAB7D9C0084BE37 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
-		2C45FC741AAB7D9C0084BE37 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Camera.m; sourceTree = "<group>"; };
-		2C45FC751AAB7D9C0084BE37 /* VTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTDecoder.h; sourceTree = "<group>"; };
-		2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTDecoder.m; sourceTree = "<group>"; };
-		2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTEncoder.h; sourceTree = "<group>"; };
-		2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTEncoder.m; sourceTree = "<group>"; };
 		2CA8B8911AB063EC005FDB43 /* AddUserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserController.h; sourceTree = "<group>"; };
 		2CA8B8921AB063EC005FDB43 /* AddUserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserController.m; sourceTree = "<group>"; };
 		2CA8B8961AB07318005FDB43 /* MessageModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessageModel.xcdatamodel; sourceTree = "<group>"; };
@@ -655,7 +637,6 @@
 			children = (
 				2CA8B8941AB072E2005FDB43 /* Storage */,
 				2CBE1E551AAFB22C000D1E22 /* ContactsController */,
-				2C76258D1AB2C17E00D0AAEE /* Video Call */,
 				2C45FC7C1AAB8C200084BE37 /* Chat */,
 				2C2786761AA8A28B00D7F014 /* AppDelegate.h */,
 				2C2786771AA8A28B00D7F014 /* AppDelegate.m */,
@@ -728,25 +709,6 @@
 				2CC7C02E1AAE08140051A250 /* ChatController.m */,
 			);
 			name = Chat;
-			sourceTree = "<group>";
-		};
-		2C76258D1AB2C17E00D0AAEE /* Video Call */ = {
-			isa = PBXGroup;
-			children = (
-				2C45FC661AAB69820084BE37 /* CallController.h */,
-				2C45FC671AAB69820084BE37 /* CallController.m */,
-				2C45FC691AAB77F60084BE37 /* DragView.h */,
-				2C45FC6A1AAB77F60084BE37 /* DragView.m */,
-				2C45FC6C1AAB7BE90084BE37 /* VideoLayerView.h */,
-				2C45FC6D1AAB7BE90084BE37 /* VideoLayerView.m */,
-				2C45FC731AAB7D9C0084BE37 /* Camera.h */,
-				2C45FC741AAB7D9C0084BE37 /* Camera.m */,
-				2C45FC751AAB7D9C0084BE37 /* VTDecoder.h */,
-				2C45FC761AAB7D9C0084BE37 /* VTDecoder.m */,
-				2C45FC771AAB7D9C0084BE37 /* VTEncoder.h */,
-				2C45FC781AAB7D9C0084BE37 /* VTEncoder.m */,
-			);
-			name = "Video Call";
 			sourceTree = "<group>";
 		};
 		2CA8B8941AB072E2005FDB43 /* Storage */ = {
@@ -1513,7 +1475,6 @@
 				2CE4EDEB1AACEDA3000CE97B /* XMPPvCard.xcdatamodeld in Sources */,
 				2CE4EDC51AACED63000CE97B /* XMPPRoomHybridStorage.m in Sources */,
 				2CE4EDFE1AACEDFD000CE97B /* XMPPDateTimeProfiles.m in Sources */,
-				2C45FC791AAB7D9C0084BE37 /* Camera.m in Sources */,
 				2CE4EDA11AACECF4000CE97B /* XMPPMUC.m in Sources */,
 				2CE4ECB21AACBC6E000CE97B /* ProfileController.m in Sources */,
 				2CC7C02F1AAE08140051A250 /* ChatController.m in Sources */,
@@ -1603,11 +1564,9 @@
 				2CE4EDD81AACED87000CE97B /* XMPPvCardTemp.m in Sources */,
 				2CE4EDEC1AACEDA3000CE97B /* XMPPvCardAvatarCoreDataStorageObject.m in Sources */,
 				2CE4EDDA1AACED87000CE97B /* XMPPvCardTempAdrTypes.m in Sources */,
-				2C45FC681AAB69820084BE37 /* CallController.m in Sources */,
 				2CE4ED511AACEAC1000CE97B /* XMPPBandwidthMonitor.m in Sources */,
 				2C03EFEF1AB22855007AB012 /* IQKeyboardManager.m in Sources */,
 				2CBE1E501AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m in Sources */,
-				2C45FC6E1AAB7BE90084BE37 /* VideoLayerView.m in Sources */,
 				2CE4EE161AACEE98000CE97B /* XMPPMessageArchiving.m in Sources */,
 				2CE4ED691AACEB62000CE97B /* XMPPRosterMemoryStorage.m in Sources */,
 				2CE4ECF31AACE83A000CE97B /* XMPPModule.m in Sources */,
@@ -1624,7 +1583,6 @@
 				2CE4EDF41AACEDBD000CE97B /* XMPPIQ+XEP_0060.m in Sources */,
 				2CE4ECEF1AACE83A000CE97B /* XMPPElement.m in Sources */,
 				2CE4EE101AACEE79000CE97B /* XMPPCapabilities.xcdatamodel in Sources */,
-				2C45FC7B1AAB7D9C0084BE37 /* VTEncoder.m in Sources */,
 				2C03EFF31AB22855007AB012 /* IQBarButtonItem.m in Sources */,
 				2CE4EDC41AACED63000CE97B /* XMPPRoomHybrid.xcdatamodeld in Sources */,
 				2CA8B89D1AB074D3005FDB43 /* Storage.m in Sources */,
@@ -1636,7 +1594,6 @@
 				2CE4EE451AACF63F000CE97B /* XMPPXFacebookPlatformAuthentication.m in Sources */,
 				2CE4ECCC1AACE7EC000CE97B /* XMPPDigestMD5Authentication.m in Sources */,
 				2CE4EDED1AACEDA3000CE97B /* XMPPvCardCoreDataStorage.m in Sources */,
-				2C45FC7A1AAB7D9C0084BE37 /* VTDecoder.m in Sources */,
 				2CE4EDB81AACED50000CE97B /* XMPPRoomMemoryStorage.m in Sources */,
 				2C03EFEC1AB22855007AB012 /* IQNSArray+Sort.m in Sources */,
 				2CE4EE211AACEED8000CE97B /* XMPPMessageArchiving_Message_CoreDataObject.m in Sources */,
@@ -1648,7 +1605,6 @@
 				2CE4ED091AACE84F000CE97B /* XMPPSRVResolver.m in Sources */,
 				2CE4EE401AACEFD4000CE97B /* XMPPAttentionModule.m in Sources */,
 				2CBE1E581AAFB26D000D1E22 /* IconView.m in Sources */,
-				2C45FC6B1AAB77F60084BE37 /* DragView.m in Sources */,
 				2CE4EE011AACEE18000CE97B /* XMPPMessage+XEP_0085.m in Sources */,
 				2C03EFEE1AB22855007AB012 /* IQUIWindow+Hierarchy.m in Sources */,
 			);

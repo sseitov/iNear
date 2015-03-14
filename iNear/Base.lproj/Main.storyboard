@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="13F1066" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="KwM-yX-dcU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="KwM-yX-dcU">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -330,13 +330,7 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ">
-                        <barButtonItem key="rightBarButtonItem" image="video-call" id="DqV-MQ-07i">
-                            <connections>
-                                <segue destination="T5Z-34-eg0" kind="show" identifier="Call" id="FDw-lU-TgU"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="Yqy-oZ-HFZ"/>
                     <connections>
                         <outlet property="message" destination="5yG-PS-vLG" id="3NS-EK-QH9"/>
                         <outlet property="messageButton" destination="UDg-al-9tt" id="CRF-Qe-CK5"/>
@@ -345,62 +339,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KjP-mj-2Q4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="138" y="-862"/>
-        </scene>
-        <!--Call Controller-->
-        <scene sceneID="Icj-7o-aar">
-            <objects>
-                <viewController id="T5Z-34-eg0" customClass="CallController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="h9i-vP-8Az"/>
-                        <viewControllerLayoutGuide type="bottom" id="6lh-kF-5K3"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="7lx-Nz-kKn">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NE6-Hb-SOu" customClass="VideoLayerView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bFj-xs-hSx" customClass="DragView">
-                                <rect key="frame" x="20" y="84" width="100" height="140"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="32A-GD-1db"/>
-                                    <constraint firstAttribute="height" constant="140" id="DKV-ba-5Jn"/>
-                                </constraints>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="NE6-Hb-SOu" firstAttribute="top" secondItem="h9i-vP-8Az" secondAttribute="bottom" id="3Ql-Dg-Xfy"/>
-                            <constraint firstItem="bFj-xs-hSx" firstAttribute="leading" secondItem="7lx-Nz-kKn" secondAttribute="leadingMargin" constant="4" id="AMS-g2-Nfi"/>
-                            <constraint firstItem="NE6-Hb-SOu" firstAttribute="leading" secondItem="7lx-Nz-kKn" secondAttribute="leadingMargin" constant="-16" id="HVP-IY-6P0"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="NE6-Hb-SOu" secondAttribute="trailing" constant="-16" id="iBh-pf-fDF"/>
-                            <constraint firstItem="bFj-xs-hSx" firstAttribute="top" secondItem="h9i-vP-8Az" secondAttribute="bottom" constant="20" id="oJo-iZ-W90"/>
-                            <constraint firstItem="6lh-kF-5K3" firstAttribute="top" secondItem="NE6-Hb-SOu" secondAttribute="bottom" id="ufq-0v-5Zk"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="scV-ZQ-XKX">
-                        <barButtonItem key="leftBarButtonItem" title="End call" id="9Me-5v-R3p">
-                            <connections>
-                                <action selector="endCall:" destination="T5Z-34-eg0" id="7N0-PR-6YU"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="switch-camera" id="aGA-zi-XF6">
-                            <connections>
-                                <action selector="switchCamera:" destination="T5Z-34-eg0" id="doH-Zr-Cns"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="peerView" destination="NE6-Hb-SOu" id="TfH-9I-59i"/>
-                        <outlet property="selfView" destination="bFj-xs-hSx" id="G7z-QN-8cr"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="56m-XI-qwK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="869" y="-862"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="RPs-VL-sM6">
@@ -499,8 +437,6 @@
     <resources>
         <image name="person" width="200" height="200"/>
         <image name="settings" width="22" height="22"/>
-        <image name="switch-camera" width="28" height="28"/>
-        <image name="video-call" width="28" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ATH-xB-zGe"/>

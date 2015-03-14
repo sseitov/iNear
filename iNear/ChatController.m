@@ -12,7 +12,6 @@
 #import "ImageView.h"
 #import "ProfileController.h"
 #import "Storage.h"
-#import "CallController.h"
 #import "BadgeView.h"
 
 @interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
@@ -339,16 +338,6 @@
         return [MessageView viewHeightForMessage:message];
     } else {
         return [ImageView viewHeightForMessage:message];
-    }
-}
-
-#pragma mark - Navigation
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([[segue identifier] isEqualToString:@"Call"]) {
-        CallController* next = [segue destinationViewController];
-        next.peer = _user;
     }
 }
 

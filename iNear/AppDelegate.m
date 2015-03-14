@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "Camera.h"
 #import "MBProgressHUD.h"
 #import "Storage.h"
 #import "ChatController.h"
@@ -66,9 +65,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [[Camera shared] startup];
-    
+{    
     [[Storage sharedInstance] saveContext];
 
     [Parse setApplicationId:@"Azz7OQsCDOQNp1Fjw7JbzXRxg1qhOcnWgFxUzYty"
