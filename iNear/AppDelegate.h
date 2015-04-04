@@ -23,8 +23,12 @@ extern NSString* const XmppMessageNotification;
 + (AppDelegate*)sharedInstance;
 + (BOOL)isPad;
 
-- (void)connectXmppFromViewController:(UIViewController*)controller result:(void (^)(BOOL))result;
-- (void)disconnectXmppFromViewController:(UIViewController*)controller result:(void (^)())complete;
+- (void)connectXmppFromViewController:(UIViewController*)controller
+                                login:(NSString*)login
+                             password:(NSString*)password
+                               result:(void (^)(BOOL))result;
+- (void)disconnectXmppFromViewController:(UIViewController*)controller
+                                  result:(void (^)())complete;
 - (BOOL)isXMPPConnected;
 
 @property (nonatomic, strong, readonly) XMPPStream *xmppStream;

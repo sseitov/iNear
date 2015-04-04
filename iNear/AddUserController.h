@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
 @class AddUserController;
 
 @protocol AddUserControllerDelegate <NSObject>
 
-- (void)addUserController:(AddUserController*)controller addUser:(NSString*)user;
+- (void)addUserController:(AddUserController*)controller addUser:(PFUser*)user;
 
 @end
 

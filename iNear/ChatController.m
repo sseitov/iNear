@@ -22,6 +22,7 @@
 @property (strong, nonatomic) BadgeView *badge;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
+- (IBAction)sendText:(id)sender;
 - (IBAction)sendImage:(id)sender;
 - (IBAction)clearChat:(id)sender;
 
@@ -99,25 +100,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.view endEditing:YES];
-    [_message resignFirstResponder];
-    
-    NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
-    [body setStringValue:_message.text];
-    
-    NSXMLElement *messageElement = [NSXMLElement elementWithName:@"message"];
-    [messageElement addAttributeWithName:@"type" stringValue:@"chat"];
-    [messageElement addAttributeWithName:@"to" stringValue:_user.jidStr];
-    [messageElement addChild:body];
-    
-    [[AppDelegate sharedInstance].xmppStream sendElement:messageElement];
-    if (!_user.isOnline) {
-        [[AppDelegate sharedInstance] pushMessageToUser:_user.displayName];
-    }
-
-    XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
-    [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
-    
-    _message.text = @"";
+    [self sendText:nil];
     return YES;
 }
 
@@ -129,6 +112,32 @@
     if (![jid.bare isEqual:_user.jid.bare]) {
         [_badge incrementCount];
     }
+}
+
+- (IBAction)sendText:(id)sender
+{
+    [_message resignFirstResponder];
+
+    if (_message.text.length > 0) {
+        NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
+        [body setStringValue:_message.text];
+        
+        NSXMLElement *messageElement = [NSXMLElement elementWithName:@"message"];
+        [messageElement addAttributeWithName:@"type" stringValue:@"chat"];
+        [messageElement addAttributeWithName:@"to" stringValue:_user.jidStr];
+        [messageElement addAttributeWithName:@"date" doubleValue:[[NSDate date] timeIntervalSince1970]];
+        [messageElement addChild:body];
+        
+        [[AppDelegate sharedInstance].xmppStream sendElement:messageElement];
+        if (!_user.isOnline) {
+            [[AppDelegate sharedInstance] pushMessageToUser:_user.displayName];
+        }
+        
+        XMPPMessage *message = [XMPPMessage messageFromElement:messageElement];
+        [[Storage sharedInstance] addMessage:message toChat:_user.displayName fromMe:YES];
+    }
+    
+    _message.text = @"";
 }
 
 - (IBAction)sendImage:(id)sender
@@ -238,6 +247,7 @@
         NSXMLElement *messageElement = [NSXMLElement elementWithName:@"message"];
         [messageElement addAttributeWithName:@"type" stringValue:@"chat"];
         [messageElement addAttributeWithName:@"to" stringValue:_user.jidStr];
+        [messageElement addAttributeWithName:@"date" doubleValue:[[NSDate date] timeIntervalSince1970]];
         [messageElement addChild:ImgAttachement];
         
         [[AppDelegate sharedInstance].xmppStream sendElement:messageElement];
@@ -335,9 +345,9 @@
     // Dynamically compute the label size based on cell type (image, image progress, or text message)
     StoreMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (message.message != nil) {
-        return [MessageView viewHeightForMessage:message];
+        return [MessageView viewHeightForMessage:message fromMe:[message.fromMe boolValue]];
     } else {
-        return [ImageView viewHeightForMessage:message];
+        return [ImageView viewHeightForMessage:message fromMe:[message.fromMe boolValue]];
     }
 }
 

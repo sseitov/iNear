@@ -59,6 +59,7 @@
 
 // Background image
 @property (nonatomic, retain) UIImageView *imageView;
+@property (nonatomic, retain) UILabel *dateLabel;
 
 @property (nonatomic) BOOL fromMe;
 @property (nonatomic) float width;
@@ -79,9 +80,14 @@
         _imageView.layer.masksToBounds = YES;
         _imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
         _imageView.layer.borderWidth = 0.5;
+        
+        _dateLabel = [UILabel new];
+        _dateLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        _dateLabel.textColor = [UIColor colorWithRed:28./255. green:79./255. blue:130./255. alpha:1];
 
         // Add to parent view
         [self addSubview:_imageView];
+        [self addSubview:_dateLabel];
     }
     return self;
 }
@@ -89,7 +95,15 @@
 - (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
     _fromMe = fromMe;
-    
+    if (!_fromMe) {
+        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+        [format setTimeStyle:NSDateFormatterShortStyle];
+        [format setDateStyle:NSDateFormatterMediumStyle];
+        _dateLabel.text = [format stringFromDate:message.date];
+    } else {
+        _dateLabel.text = @"";
+    }
+
     UIImage *image = [UIImage imageWithData:message.attachment];
         
     _imageView.image = image;
@@ -115,13 +129,15 @@
     CGFloat yOffset;
 
     if (_fromMe) {
+        _dateLabel.frame = CGRectMake(0, 0, 0, 0);
         // Sent images appear or right of view
         xOffsetBalloon = self.frame.size.width - _width - IMAGE_PADDING_X;
         yOffset = BUFFER_WHITE_SPACE / 2;
     } else {
+        _dateLabel.frame = CGRectMake(10, 5, 160, 15);
         // Received images appear on left of view with additional display name label
         xOffsetBalloon = IMAGE_PADDING_X;
-        yOffset = (BUFFER_WHITE_SPACE / 2);
+        yOffset = (BUFFER_WHITE_SPACE / 2) + 15;
     }
 
     // Set the dynamic frames
@@ -130,9 +146,13 @@
 
 #pragma - class methods for computing sizes based on strings
 
-+ (CGFloat)viewHeightForMessage:(StoreMessage *)message
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
-    return (IMAGE_VIEW_HEIGHT_MAX + BUFFER_WHITE_SPACE);
+    if (fromMe) {
+        return (IMAGE_VIEW_HEIGHT_MAX + BUFFER_WHITE_SPACE);
+    } else {
+        return (IMAGE_VIEW_HEIGHT_MAX + BUFFER_WHITE_SPACE)+20;
+    }
 }
 
 @end

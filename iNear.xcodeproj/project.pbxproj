@@ -22,6 +22,7 @@
 		2C3C5B0C1AC190DE003B03D3 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3C5B0B1AC190DE003B03D3 /* Social.framework */; };
 		2C45FC701AAB7C330084BE37 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */; };
 		2C45FC721AAB7C650084BE37 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C45FC711AAB7C650084BE37 /* AVFoundation.framework */; };
+		2C78212D1ACFF17B00CC00B5 /* SignUpController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C78212C1ACFF17B00CC00B5 /* SignUpController.m */; };
 		2CA8B8931AB063EC005FDB43 /* AddUserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8921AB063EC005FDB43 /* AddUserController.m */; };
 		2CA8B8971AB07318005FDB43 /* MessageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B8951AB07318005FDB43 /* MessageModel.xcdatamodeld */; };
 		2CA8B89D1AB074D3005FDB43 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA8B89C1AB074D3005FDB43 /* Storage.m */; };
@@ -182,6 +183,8 @@
 		2C3C5B0B1AC190DE003B03D3 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		2C45FC6F1AAB7C330084BE37 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		2C45FC711AAB7C650084BE37 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2C78212B1ACFF17B00CC00B5 /* SignUpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpController.h; sourceTree = "<group>"; };
+		2C78212C1ACFF17B00CC00B5 /* SignUpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpController.m; sourceTree = "<group>"; };
 		2CA8B8911AB063EC005FDB43 /* AddUserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserController.h; sourceTree = "<group>"; };
 		2CA8B8921AB063EC005FDB43 /* AddUserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserController.m; sourceTree = "<group>"; };
 		2CA8B8961AB07318005FDB43 /* MessageModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessageModel.xcdatamodel; sourceTree = "<group>"; };
@@ -538,6 +541,8 @@
 				2C2786771AA8A28B00D7F014 /* AppDelegate.m */,
 				2CE4ECB01AACBC6E000CE97B /* ProfileController.h */,
 				2CE4ECB11AACBC6E000CE97B /* ProfileController.m */,
+				2C78212B1ACFF17B00CC00B5 /* SignUpController.h */,
+				2C78212C1ACFF17B00CC00B5 /* SignUpController.m */,
 			);
 			path = iNear;
 			sourceTree = "<group>";
@@ -1427,6 +1432,7 @@
 				2CE4EE071AACEE58000CE97B /* XMPPCapabilities.m in Sources */,
 				2C2786781AA8A28B00D7F014 /* AppDelegate.m in Sources */,
 				2CE4ED741AACEB7D000CE97B /* XMPPGroupCoreDataStorageObject.m in Sources */,
+				2C78212D1ACFF17B00CC00B5 /* SignUpController.m in Sources */,
 				2CE4EDB11AACED2F000CE97B /* XMPPRoomOccupantCoreDataStorageObject.m in Sources */,
 				2CE4EDDB1AACED87000CE97B /* XMPPvCardTempBase.m in Sources */,
 				2CE4ED3C1AACE996000CE97B /* DDXMLDocument.m in Sources */,

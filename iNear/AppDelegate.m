@@ -22,7 +22,7 @@
 #define SIGNAL(a) [a lock]; [a signal]; [a unlock]
 
 @interface AppDelegate () <UISplitViewControllerDelegate, XMPPRosterDelegate> {
-    NSString *password;
+    NSString *xmppPassword;
     BOOL customCertEvaluation;
     BOOL isXmppConnected;
     NSCondition *connectCondition;
@@ -318,26 +318,18 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     
     [[self xmppStream] sendElement:presence];
 }
-
+/*
 - (BOOL)connect
 {
     if (![_xmppStream isDisconnected]) {
         return YES;
     }
     
-    NSString *myJID = [Storage myJid];
-    NSString *myPassword = [Storage myPassword];
-    
-    if (myJID.length == 0 || myPassword.length == 0) {
-        return NO;
-    }
-    
-    [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
-    password = myPassword;
+    [_xmppStream setMyJID:[XMPPJID jidWithString:xmppLogin]];
     
     return [_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
 }
-
+*/
 - (void)disconnect
 {
     [self goOffline];
@@ -348,13 +340,15 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 #pragma mark - Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)connectXmppFromViewController:(UIViewController*)controller result:(void (^)(BOOL))result
+- (void)connectXmppFromViewController:(UIViewController*)controller login:(NSString*)login password:(NSString*)password result:(void (^)(BOOL))result
 {
     [MBProgressHUD showHUDAddedTo:controller.view animated:YES];
+    [_xmppStream setMyJID:[XMPPJID jidWithString:login]];
+    xmppPassword = password;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         connectCondition = [NSCondition new];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (![self connect]) {
+            if (![_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil]) {
                 SIGNAL(connectCondition);
             }
         });
@@ -364,10 +358,8 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
             if (isXmppConnected) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:XmppConnectedNotification object:nil];
             }
-            if (isXmppConnected) {
-                [PFInstallation currentInstallation][@"jabber"] = [Storage myJid];
-                [[PFInstallation currentInstallation] saveInBackground];
-            }
+/*            if (isXmppConnected) {
+            }*/
             result(isXmppConnected);
         });
     });
@@ -456,7 +448,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 {
     isXmppConnected = YES;
     NSError *error = nil;
-    if (![[self xmppStream] authenticateWithPassword:password error:&error])
+    if (![[self xmppStream] authenticateWithPassword:xmppPassword error:&error])
     {
         NSLog(@"Error authenticating: %@", error);
     }
@@ -605,7 +597,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     // Build a query to match user
     PFQuery *query = [PFUser query];
     [query whereKey:@"jabber" equalTo:user];
-    NSString *message = [NSString stringWithFormat:@"You have received a message from %@ (%@)", [Storage myJid], [Storage myNick]];
+    NSString *message = [NSString stringWithFormat:@"You have received a message from %@", [PFUser currentUser].email];
     NSDictionary *data = @{@"alert" : message, @"badge" : @"Increment", @"sound": @"default"};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];

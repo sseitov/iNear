@@ -29,15 +29,4 @@
 - (NSUInteger)allMessagesCountForUser:(NSString*)displayName;
 - (void)clearChat:(NSString*)chatName;
 
-
-+ (NSString*)myJid;
-+ (NSString*)myPassword;
-+ (NSString*)myNick;
-+ (NSData*)myImage;
-
-+ (void)setMyJid:(NSString*)jid;
-+ (void)setMyPassword:(NSString*)pwd;
-+ (void)setMyNick:(NSString*)nick;
-+ (void)setMyImage:(NSData*)image;
-
 @end

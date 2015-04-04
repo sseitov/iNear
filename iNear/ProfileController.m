@@ -9,26 +9,39 @@
 #import "ProfileController.h"
 #import "AppDelegate.h"
 #import "XMPPvCardTemp.h"
-#import "Storage.h"
+#import <Parse/Parse.h>
 
 @interface ProfileController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *account;
 @property (weak, nonatomic) IBOutlet UITextField *password;
 @property (weak, nonatomic) IBOutlet UITextField *displayName;
-@property (weak, nonatomic) IBOutlet UIButton *upload;
-@property (weak, nonatomic) IBOutlet UIButton *takeImage;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *status;
+
+@property (weak, nonatomic) IBOutlet UIButton *actionButton;
+@property (weak, nonatomic) IBOutlet UIButton *takeImageButton;
+@property (weak, nonatomic) IBOutlet UISwitch *storePasswordSwitch;
 
 - (IBAction)takePhoto:(id)sender;
 - (IBAction)connect:(id)sender;
-- (IBAction)uploadCard:(id)sender;
+- (IBAction)storePassword:(UISwitch *)sender;
 
 @property (strong, nonatomic) UIImageView *profileImage;
 
 @end
 
 @implementation ProfileController
+
++ (UIColor*)connectedColor
+{
+    return [UIColor colorWithRed:28./255. green:79./255. blue:130./255. alpha:1.];
+
+}
+
++ (UIColor*)disconnectedColor
+{
+    return [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
+    
+}
 
 - (void)viewDidLoad
 {
@@ -40,36 +53,29 @@
                                                                                 target:self
                                                                                 action:@selector(goBack)];
     }
+    
+    _takeImageButton.layer.borderWidth = 1.0;
+    _takeImageButton.layer.masksToBounds = YES;
+    _takeImageButton.layer.cornerRadius = 20.0;
 
-    _upload.layer.borderWidth = 1.0;
-    _upload.layer.masksToBounds = YES;
-    _upload.layer.cornerRadius = 7.0;
-    _upload.backgroundColor = [UIColor colorWithRed:28./256. green:79./256. blue:130./256. alpha:1.];
-    _upload.layer.borderColor = _upload.backgroundColor.CGColor;
+    _actionButton.layer.borderWidth = 1.0;
+    _actionButton.layer.masksToBounds = YES;
+    _actionButton.layer.cornerRadius = 7.0;
 
-    _profileImage = [[UIImageView alloc] initWithFrame:_takeImage.bounds];
+    _profileImage = [[UIImageView alloc] initWithFrame:_takeImageButton.bounds];
     _profileImage.layer.cornerRadius = _profileImage.frame.size.width/2;
     _profileImage.clipsToBounds = YES;
     
-    NSData* imageData = [Storage myImage];
-    if (imageData) {
-        _profileImage.image = [UIImage imageWithData:imageData];
-        [_takeImage addSubview:_profileImage];
-    }
-    _account.text = [Storage myJid];
-    _password.text = [Storage myPassword];
-    _displayName.text = [Storage myNick];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppConnectedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDisconnected:) name:XmppDisconnectedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConnected:) name:XmppDisconnectedNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if ([[AppDelegate sharedInstance] isXMPPConnected]) {
-        [self handleConnected:nil];
+    if (![PFUser currentUser]) {
+        [self performSegueWithIdentifier:@"SignUp" sender:self];
     } else {
-        [self handleDisconnected:nil];
+        [self updateUI];
     }
 }
 
@@ -83,22 +89,43 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void) handleConnected:(NSNotification *)aNotification
+- (void)handleConnected:(NSNotification *)aNotification
 {
-    _status.tintColor = [UIColor whiteColor];
-    _upload.enabled = YES;
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self updateUI];
+    });
 }
 
-- (void) handleDisconnected:(NSNotification *)aNotification
+- (void)updateUI
 {
-    _status.tintColor = [UIColor yellowColor];
-    _upload.enabled = NO;
+    PFUser* user = [PFUser currentUser];
+    if (user) {
+        _account.text = user[@"jabber"];
+        _displayName.text = user[@"displayName"];
+        _storePasswordSwitch.on = [user[@"storePassword"] boolValue];
+        if (_storePasswordSwitch.on) {
+            _password.text = user[@"jabberPassword"];
+        }
+        if (user[@"photo"]) {
+            _profileImage.image = [UIImage imageWithData:user[@"photo"]];
+            [_takeImageButton addSubview:_profileImage];
+        }
+    }
+
+    if ([[AppDelegate sharedInstance] isXMPPConnected]) {
+        _actionButton.backgroundColor = [ProfileController connectedColor];
+        [_actionButton setTitle:@"Update photo & nick" forState:UIControlStateNormal];
+    } else {
+        _actionButton.backgroundColor = [ProfileController disconnectedColor];
+        [_actionButton setTitle:@"Connect to Jabber" forState:UIControlStateNormal];
+    }
+    _actionButton.layer.borderColor = _actionButton.backgroundColor.CGColor;
 }
 
-- (void)connectionError
+- (void)connectionError:(NSString*)message
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error!"
-                                                    message:@"Check your login and password."
+                                                    message:message //
                                                    delegate:nil
                                           cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
     [alert show];
@@ -106,33 +133,45 @@
 
 - (void)doConnect
 {
-    if (_account.text && _password.text) {
-        [Storage setMyJid:_account.text];
-        [Storage setMyPassword:_password.text];
-    } else {
-        [self connectionError];
+    if (!_account.text || !_password.text) {
+        [self connectionError:@"Check your jabber login and password."];
         return;
     }
     
-    
-    [[AppDelegate sharedInstance] connectXmppFromViewController:self result:^(BOOL result) {
+    [[AppDelegate sharedInstance] connectXmppFromViewController:self
+                                                          login:_account.text
+                                                       password:_password.text
+                                                         result:^(BOOL result)
+    {
         if (!result) {
-            [self connectionError];
+            [self connectionError:@"Check your jabber login and password."];
         } else {
+            [PFUser currentUser][@"jabber"] = _account.text;
+            [PFUser currentUser][@"storePassword"] = [NSNumber numberWithBool:_storePasswordSwitch.on];
+            if (_storePasswordSwitch.on) {
+                [PFUser currentUser][@"jabberPassword"] = _password.text;
+            } else {
+                [PFUser currentUser][@"jabberPassword"] = @"";
+            }
+            [[PFUser currentUser] saveInBackground];
+            
+            [PFInstallation currentInstallation][@"jabber"] = _account.text;
+            [[PFInstallation currentInstallation] saveInBackground];
+            
             XMPPvCardTemp *myVcardTemp = [[AppDelegate sharedInstance].xmppvCardTempModule myvCardTemp];
             if (myVcardTemp) {
                 NSData* imageData = myVcardTemp.photo;
-                if (imageData && [Storage myImage] == nil) {
+                if (imageData) {
+                    [PFUser currentUser][@"photo"] = imageData;
                     _profileImage.image = [UIImage imageWithData:imageData];
                     if (!_profileImage.superview) {
-                        [_takeImage addSubview:_profileImage];
+                        [_takeImageButton addSubview:_profileImage];
                     }
-                    [Storage setMyImage:imageData];
                 }
                 NSString* nick = myVcardTemp.nickname;
-                if (nick && [[Storage myNick] isEqual:@""]) {
+                if (nick) {
+                    [PFUser currentUser][@"displayName"] = nick;
                     _displayName.text = nick;
-                    [Storage setMyNick:nick];
                 }
             }
         }
@@ -142,30 +181,25 @@
 - (IBAction)connect:(id)sender
 {
     if ([[AppDelegate sharedInstance] isXMPPConnected]) {
-        [[AppDelegate sharedInstance] disconnectXmppFromViewController:self result:^() {
-            [self doConnect];
-        }];
+        [self uploadInfo];
     } else {
         [self doConnect];
     }
 }
 
-- (IBAction)uploadCard:(id)sender
+- (IBAction)storePassword:(UISwitch *)sender {
+}
+
+- (void)uploadInfo
 {
-    [Storage setMyNick:_displayName.text];
-    dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
-    dispatch_async(queue, ^{
-        XMPPvCardTemp *myVcardTemp = [[AppDelegate sharedInstance].xmppvCardTempModule myvCardTemp];
-        if (!myVcardTemp) {
-            NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
-            myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
-        }
-        if ([Storage myImage]) {
-            [myVcardTemp setPhoto:[Storage myImage]];
-        }
-        [myVcardTemp setNickname:[Storage myNick]];
-        [[AppDelegate sharedInstance].xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
-    });
+    if (_profileImage.image) {
+        NSData *pngData = UIImageJPEGRepresentation(_profileImage.image, .5);
+        [PFUser currentUser][@"photo"] = pngData;
+    }
+    if (_displayName.text) {
+        [PFUser currentUser][@"displayName"] = _displayName.text;
+    }
+    [[PFUser currentUser] saveInBackground];
 }
 
 - (IBAction)takePhoto:(id)sender
@@ -254,12 +288,10 @@
         // We only handle a still image
         UIImage *imageToSave = [self scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
                                    toResolution:128];
-        NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
-        [Storage setMyImage:pngData];
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image = imageToSave;
             if (!_profileImage.superview) {
-                [_takeImage addSubview:_profileImage];
+                [_takeImageButton addSubview:_profileImage];
             }
         });
     });

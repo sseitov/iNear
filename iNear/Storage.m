@@ -181,7 +181,8 @@
 {
     StoreMessage *newMessage = (StoreMessage *)[NSEntityDescription insertNewObjectForEntityForName:@"StoreMessage"
                                                                              inManagedObjectContext: _managedObjectContext];
-    newMessage.date = [NSDate date];
+    NSTimeInterval time = [message attributeDoubleValueForName:@"date"];
+    newMessage.date = [NSDate dateWithTimeIntervalSince1970:time];
     newMessage.fromMe = [NSNumber numberWithBool:fromMe];
     if (fromMe) {
         newMessage.isNew = [NSNumber numberWithBool:NO];
@@ -236,84 +237,6 @@
         }
         [self saveContext];
     }
-}
-
-#pragma mark - Profile properties
-
-+ (NSString*)myJid
-{
-    NSDictionary *profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (profile && [profile objectForKey:@"account"]) {
-        return [profile objectForKey:@"account"];
-    } else {
-        return @"";
-    }
-}
-
-+ (NSString*)myPassword
-{
-    NSDictionary *profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (profile && [profile objectForKey:@"password"]) {
-        return [profile objectForKey:@"password"];
-    } else {
-        return @"";
-    }
-}
-
-+ (NSString*)myNick
-{
-    NSDictionary *profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (profile && [profile objectForKey:@"displayName"]) {
-        return [profile objectForKey:@"displayName"];
-    } else {
-        return @"";
-    }
-}
-
-+ (NSData*)myImage
-{
-    NSDictionary *profile = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    if (profile && [profile objectForKey:@"image"]) {
-        return [profile objectForKey:@"image"];
-    } else {
-        return nil;
-    }
-}
-
-+ (void)setMyJid:(NSString*)jid
-{
-    NSDictionary *old = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    NSMutableDictionary *new = (old == nil) ? [NSMutableDictionary dictionary] : [NSMutableDictionary dictionaryWithDictionary:old];
-    [new setObject:jid forKey:@"account"];
-    [[NSUserDefaults standardUserDefaults] setObject:new forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-+ (void)setMyPassword:(NSString*)pwd
-{
-    NSDictionary *old = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    NSMutableDictionary *new = (old == nil) ? [NSMutableDictionary dictionary] : [NSMutableDictionary dictionaryWithDictionary:old];
-    [new setObject:pwd forKey:@"password"];
-    [[NSUserDefaults standardUserDefaults] setObject:new forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-+ (void)setMyNick:(NSString*)nick
-{
-    NSDictionary *old = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    NSMutableDictionary *new = (old == nil) ? [NSMutableDictionary dictionary] : [NSMutableDictionary dictionaryWithDictionary:old];
-    [new setObject:nick forKey:@"displayName"];
-    [[NSUserDefaults standardUserDefaults] setObject:new forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-+ (void)setMyImage:(NSData*)image
-{
-    NSDictionary *old = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile"];
-    NSMutableDictionary *new = (old == nil) ? [NSMutableDictionary dictionary] : [NSMutableDictionary dictionaryWithDictionary:old];
-    [new setObject:image forKey:@"image"];
-    [[NSUserDefaults standardUserDefaults] setObject:new forKey:@"profile"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

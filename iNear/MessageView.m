@@ -78,6 +78,7 @@
 @property (nonatomic, retain) UIImageView *balloonView;
 // Message text string
 @property (nonatomic, retain) UILabel *messageLabel;
+@property (nonatomic, retain) UILabel *dateLabel;
 
 // Cache the background images and stretchable insets
 @property (retain, nonatomic) UIImage *balloonImageLeft;
@@ -100,7 +101,10 @@
         _balloonView = [UIImageView new];
         _messageLabel = [UILabel new];
         _messageLabel.numberOfLines = 0;
-
+        _dateLabel = [UILabel new];
+        _dateLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        _dateLabel.textColor = [UIColor colorWithRed:28./255. green:79./255. blue:130./255. alpha:1];
+        
         self.balloonImageLeft = [UIImage imageNamed:@"bubble-left"];
         self.balloonImageRight = [UIImage imageNamed:@"bubble-right"];
 
@@ -109,6 +113,7 @@
 
         // Add to parent view
         [self addSubview:_balloonView];
+        [self addSubview:_dateLabel];
         [self addSubview:_messageLabel];
     }
     return self;
@@ -119,6 +124,14 @@
 {
     _messageLabel.text = message.message;
     _fromMe = fromMe;
+    if (!_fromMe) {
+        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+        [format setTimeStyle:NSDateFormatterShortStyle];
+        [format setDateStyle:NSDateFormatterMediumStyle];
+        _dateLabel.text = [format stringFromDate:message.date];
+    } else {
+        _dateLabel.text = @"";
+    }
     [self setNeedsLayout];
 }
 
@@ -135,6 +148,7 @@
     CGFloat yOffset;
     
     if (_fromMe) {
+        _dateLabel.frame = CGRectMake(0, 0, 0, 0);
         // Sent messages appear or right of view
         xOffsetLabel = self.frame.size.width - labelSize.width - (BALLOON_WIDTH_PADDING / 2) - 3;
         xOffsetBalloon = self.frame.size.width - balloonSize.width;
@@ -145,10 +159,11 @@
         _balloonView.image = [self.balloonImageRight resizableImageWithCapInsets:_balloonInsetsRight];
     }
     else {
+        _dateLabel.frame = CGRectMake(10, 5, 160, 15);
         // Received messages appear on left of view with additional display name label
         xOffsetBalloon = 0;
         xOffsetLabel = (BALLOON_WIDTH_PADDING / 2) + 3;
-        yOffset = (BUFFER_WHITE_SPACE / 2);
+        yOffset = (BUFFER_WHITE_SPACE / 2)+15;
         // Set text color
         _messageLabel.textColor = [UIColor darkTextColor];
         // Set resizeable image
@@ -162,10 +177,14 @@
 
 #pragma - class methods for computing sizes based on strings
 
-+ (CGFloat)viewHeightForMessage:(StoreMessage *)message
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
     CGFloat labelHeight = [MessageView balloonSizeForLabelSize:[MessageView labelSizeForString:message.message fontSize:MESSAGE_FONT_SIZE]].height;
-    return (labelHeight + BUFFER_WHITE_SPACE);
+    if (fromMe) {
+        return (labelHeight + BUFFER_WHITE_SPACE);
+    } else {
+        return (labelHeight + BUFFER_WHITE_SPACE)+20;
+    }
 }
 
 + (CGSize)labelSizeForString:(NSString *)string fontSize:(CGFloat)fontSize

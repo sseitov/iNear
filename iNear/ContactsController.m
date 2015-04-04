@@ -16,6 +16,7 @@
 #import "Storage.h"
 
 #import "XMPPFramework.h"
+#import <Parse/Parse.h>
 
 @interface ContactsController () <AddUserControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
@@ -33,22 +34,26 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSubscribe:) name:XmppSubscribeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMessage:) name:XmppMessageNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDisconnected:) name:XmppDisconnectedNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     if (![[AppDelegate sharedInstance] isXMPPConnected]) {
-        [[AppDelegate sharedInstance] connectXmppFromViewController:self result:^(BOOL result) {
-            if (!result) {
-                [self performSegueWithIdentifier:@"MyProfile" sender:self];
-            }
-        }];
+        [self performSegueWithIdentifier:@"MyProfile" sender:self];
     }
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) handleDisconnected:(NSNotification *)aNotification
+{
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self performSegueWithIdentifier:@"MyProfile" sender:self];
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,8 +186,7 @@
         ChatController *chat = (ChatController*)vc.topViewController;
         chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     } else if ([[segue identifier] isEqualToString:@"AddUser"]) {
-        UINavigationController *vc = [segue destinationViewController];
-        AddUserController* next = (AddUserController*)vc.topViewController;
+        AddUserController* next = [segue destinationViewController];
         next.delegate = self;
         if ([AppDelegate isPad]) {
             next.preferredContentSize = CGSizeMake(320, 120);
@@ -190,13 +194,14 @@
     }
 }
 
-- (void)addUserController:(AddUserController*)controller addUser:(NSString*)user
+- (void)addUserController:(AddUserController*)controller addUser:(PFUser*)user
 {
-    if (user.length > 0) {
-        XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@", user]];
-        [[AppDelegate sharedInstance].xmppRoster addUser:jid withNickname:[NSString stringWithFormat:@"%@", user]];
+    if (user) {
+        XMPPJID *jid = [XMPPJID jidWithString:user[@"jabber"]];
+        NSString *name = user[@"displayName"] ? user[@"displayName"] : user[@"email"];
+        [[AppDelegate sharedInstance].xmppRoster addUser:jid withNickname:name];
     }
-    [controller dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - XMPP notifications

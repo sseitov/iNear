@@ -56,6 +56,6 @@
 @interface MessageView : UIView
 
 - (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe;
-+ (CGFloat)viewHeightForMessage:(StoreMessage *)message;
++ (CGFloat)viewHeightForMessage:(StoreMessage *)message fromMe:(BOOL)fromMe;
 
 @end
