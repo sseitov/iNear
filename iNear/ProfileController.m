@@ -114,7 +114,7 @@
 
     if ([[AppDelegate sharedInstance] isXMPPConnected]) {
         _actionButton.backgroundColor = [ProfileController connectedColor];
-        [_actionButton setTitle:@"Update photo & nick" forState:UIControlStateNormal];
+        [_actionButton setTitle:@"Update vCard" forState:UIControlStateNormal];
     } else {
         _actionButton.backgroundColor = [ProfileController disconnectedColor];
         [_actionButton setTitle:@"Connect to Jabber" forState:UIControlStateNormal];
@@ -122,10 +122,10 @@
     _actionButton.layer.borderColor = _actionButton.backgroundColor.CGColor;
 }
 
-- (void)connectionError:(NSString*)message
+- (void)connectionError
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error!"
-                                                    message:message //
+                                                    message:@"Check your jabber login and password."
                                                    delegate:nil
                                           cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
     [alert show];
@@ -134,7 +134,7 @@
 - (void)doConnect
 {
     if (!_account.text || !_password.text) {
-        [self connectionError:@"Check your jabber login and password."];
+        [self connectionError];
         return;
     }
     
@@ -144,7 +144,7 @@
                                                          result:^(BOOL result)
     {
         if (!result) {
-            [self connectionError:@"Check your jabber login and password."];
+            [self connectionError];
         } else {
             [PFUser currentUser][@"jabber"] = _account.text;
             [PFUser currentUser][@"storePassword"] = [NSNumber numberWithBool:_storePasswordSwitch.on];
@@ -200,6 +200,22 @@
         [PFUser currentUser][@"displayName"] = _displayName.text;
     }
     [[PFUser currentUser] saveInBackground];
+    
+    dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
+    dispatch_async(queue, ^{
+        XMPPvCardTemp *myVcardTemp = [[AppDelegate sharedInstance].xmppvCardTempModule myvCardTemp];
+        if (!myVcardTemp) {
+            NSXMLElement *vCardXML = [NSXMLElement elementWithName:@"vCard" xmlns:@"vcard-temp"];
+            myVcardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
+        }
+        if ([PFUser currentUser][@"photo"]) {
+            [myVcardTemp setPhoto:[PFUser currentUser][@"photo"]];
+        }
+        if ([PFUser currentUser][@"displayName"]) {
+            [myVcardTemp setNickname:[PFUser currentUser][@"displayName"]];
+        }
+        [[AppDelegate sharedInstance].xmppvCardTempModule updateMyvCardTemp:myVcardTemp];
+    });
 }
 
 - (IBAction)takePhoto:(id)sender
