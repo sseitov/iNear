@@ -53,7 +53,15 @@
 // TAG used in our custom table view cell to retreive this view
 #define IMAGE_VIEW_TAG (100)
 
+@protocol ImageViewDelegate <NSObject>
+
+- (void)didTapOnMessage:(StoreMessage*)message;
+
+@end
+
 @interface ImageView : UIView
+
+@property (weak, nonatomic) id<ImageViewDelegate> delegate;
 
 - (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe;
 + (CGFloat)viewHeightForMessage:(StoreMessage *)message fromMe:(BOOL)fromMe;

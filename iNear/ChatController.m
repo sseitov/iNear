@@ -15,8 +15,9 @@
 #import "BadgeView.h"
 #import <Parse/Parse.h>
 #import "MapController.h"
+#import "ShowPictureController.h"
 
-@interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
+@interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer, ImageViewDelegate>
 
 @property (strong, nonatomic) PFUser *parseUser;
 
@@ -357,6 +358,7 @@
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ImageCell" forIndexPath:indexPath];
         ImageView *imageView = (ImageView *)[cell viewWithTag:IMAGE_VIEW_TAG];
+        imageView.delegate = self;
         [imageView setMessage:message fromMe:[message.fromMe boolValue]];
     }
     
@@ -374,11 +376,19 @@
     }
 }
 
+- (void)didTapOnMessage:(StoreMessage*)message
+{
+    [self performSegueWithIdentifier:@"ShowPicture" sender:message];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"Map"]) {
         MapController *map = [segue destinationViewController];
         map.user = _parseUser;
+    } else if ([[segue identifier] isEqualToString:@"ShowPicture"]) {
+        ShowPictureController *picture = [segue destinationViewController];
+        picture.message = sender;
     }
 }
 

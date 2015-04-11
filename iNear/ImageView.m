@@ -58,12 +58,14 @@
 @interface ImageView ()
 
 // Background image
-@property (nonatomic, retain) UIImageView *imageView;
-@property (nonatomic, retain) UILabel *dateLabel;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *dateLabel;
 
 @property (nonatomic) BOOL fromMe;
 @property (nonatomic) float width;
 @property (nonatomic) float height;
+
+@property (nonatomic, assign) StoreMessage *message;
 
 @end
 
@@ -72,8 +74,6 @@
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
         // Initialization the views
         _imageView = [UIImageView new];
         _imageView.layer.cornerRadius = 5.0;
@@ -88,13 +88,24 @@
         // Add to parent view
         [self addSubview:_imageView];
         [self addSubview:_dateLabel];
+        
+        UITapGestureRecognizer *press = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(press:)];
+        [self addGestureRecognizer:press];
     }
     return self;
+}
+
+- (void)press:(UITapGestureRecognizer*)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        [self.delegate didTapOnMessage:_message];
+    }
 }
 
 - (void)setMessage:(StoreMessage *)message fromMe:(BOOL)fromMe
 {
     _fromMe = fromMe;
+    _message = message;
     if (!_fromMe) {
         NSDateFormatter *format = [[NSDateFormatter alloc] init];
         [format setTimeStyle:NSDateFormatterShortStyle];
