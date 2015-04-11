@@ -17,11 +17,13 @@
 #import "XMPPvCardTemp.h"
 
 #import <Parse/Parse.h>
+#import <GoogleMaps/GoogleMaps.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define WAIT(a) [a lock]; [a wait]; [a unlock]
 #define SIGNAL(a) [a lock]; [a signal]; [a unlock]
 
-@interface AppDelegate () <UISplitViewControllerDelegate, XMPPRosterDelegate> {
+@interface AppDelegate () <UISplitViewControllerDelegate, XMPPRosterDelegate, CLLocationManagerDelegate> {
     NSString *xmppPassword;
     BOOL customCertEvaluation;
     BOOL isXmppConnected;
@@ -33,6 +35,8 @@
 @property (nonatomic, strong, readonly) XMPPvCardCoreDataStorage *xmppvCardStorage;
 @property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
 @property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
+
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 - (void)setupStream;
 - (void)teardownStream;
@@ -67,7 +71,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
     [[Storage sharedInstance] saveContext];
-
+    
     [Parse setApplicationId:@"Azz7OQsCDOQNp1Fjw7JbzXRxg1qhOcnWgFxUzYty"
                   clientKey:@"utsSMDqCgOy8IPgTIaL0OefzBtrz8ajMNRPtlSHL"];
     
@@ -81,6 +85,21 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [application registerUserNotificationSettings:settings];
     [application registerForRemoteNotifications];
     
+    
+    [GMSServices provideAPIKey:@"AIzaSyASkBVjFprQb3Mhalnl_rnGe14ewUlrrGA"];
+    if ([CLLocationManager locationServicesEnabled])
+    {
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+        if (status != kCLAuthorizationStatusAuthorizedAlways) {
+            [_locationManager requestAlwaysAuthorization];
+        }
+        status = [CLLocationManager authorizationStatus];
+        [_locationManager startUpdatingLocation];
+    }
+
     // Configure logging framework
 //    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     // Setup the XMPP stream
@@ -587,6 +606,26 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     }
     return NO;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Push notifications
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *location = [locations lastObject];
+    if (location) {
+        PFUser *user = [PFUser currentUser];
+        if (user) {
+            NSLog(@"update location");
+            NSDictionary *locObject = @{@"latitude" : [NSNumber numberWithDouble:location.coordinate.latitude],
+                                        @"longitude": [NSNumber numberWithDouble:location.coordinate.longitude]};
+            user[@"location"] = locObject;
+            [user saveInBackground];
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Push notifications
