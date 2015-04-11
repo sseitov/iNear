@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
 @interface MapController : UIViewController
+
+@property (strong, nonatomic) PFUser *user;
 
 @end

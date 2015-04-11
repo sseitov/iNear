@@ -91,7 +91,8 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     {
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        _locationManager.distanceFilter = 10;
         CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
         if (status != kCLAuthorizationStatusAuthorizedAlways) {
             [_locationManager requestAlwaysAuthorization];

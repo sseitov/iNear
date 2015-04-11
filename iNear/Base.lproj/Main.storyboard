@@ -442,26 +442,22 @@
                             </textField>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="WFB-zS-4sO"/>
-                        <barButtonItem systemItem="reply" id="sbd-mz-fTh">
+                        <barButtonItem systemItem="action" id="sbd-mz-fTh">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <action selector="sendText:" destination="Cu4-pL-fBg" id="qax-nL-7hh"/>
+                                <action selector="action:" destination="Cu4-pL-fBg" id="z2D-4d-wJX"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="Yqy-oZ-HFZ">
-                        <barButtonItem key="leftBarButtonItem" systemItem="trash" id="JJq-vQ-eKK">
-                            <connections>
-                                <action selector="clearChat:" destination="Cu4-pL-fBg" id="6PJ-hJ-aG3"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="map" id="8qt-NH-FR1">
                             <connections>
-                                <segue destination="Ejo-iA-olL" kind="show" id="hgp-RH-Qew"/>
+                                <segue destination="Ejo-iA-olL" kind="show" identifier="Map" id="hgp-RH-Qew"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="actionButton" destination="sbd-mz-fTh" id="U4d-XO-8Di"/>
                         <outlet property="message" destination="5yG-PS-vLG" id="3NS-EK-QH9"/>
                         <outlet property="messageButton" destination="UDg-al-9tt" id="CRF-Qe-CK5"/>
                     </connections>

@@ -13,10 +13,15 @@
 #import "ProfileController.h"
 #import "Storage.h"
 #import "BadgeView.h"
+#import <Parse/Parse.h>
+#import "MapController.h"
 
 @interface ChatController () <UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIContentContainer>
 
+@property (strong, nonatomic) PFUser *parseUser;
+
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *messageButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *actionButton;
 @property (weak, nonatomic) IBOutlet UITextField *message;
 
 @property (strong, nonatomic) BadgeView *badge;
@@ -25,6 +30,7 @@
 - (IBAction)sendText:(id)sender;
 - (IBAction)sendImage:(id)sender;
 - (IBAction)clearChat:(id)sender;
+- (IBAction)action:(UIBarButtonItem *)sender;
 
 @end
 
@@ -40,6 +46,14 @@
     [super viewDidLoad];
 
     self.title = [[AppDelegate sharedInstance] nickNameForUser:_user];
+    
+    PFQuery *query = [PFUser query];
+    [query whereKey:@"jabber" equalTo:_user.jidStr];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError* error) {
+        if (!error) {
+            _parseUser =  [objects firstObject];
+        }
+    }];
     
     _message.inputAccessoryView = [[UIView alloc] init];
     if (![AppDelegate isPad]) {
@@ -165,6 +179,15 @@
         [popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
         [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+- (IBAction)action:(UIBarButtonItem *)sender
+{
+    if (_message.text.length > 0) {
+        [self sendText:sender];
+    } else {
+        [self clearChat:sender];
     }
 }
 
@@ -348,6 +371,14 @@
         return [MessageView viewHeightForMessage:message fromMe:[message.fromMe boolValue]];
     } else {
         return [ImageView viewHeightForMessage:message fromMe:[message.fromMe boolValue]];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"Map"]) {
+        MapController *map = [segue destinationViewController];
+        map.user = _parseUser;
     }
 }
 
