@@ -618,6 +618,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     if (location) {
         PFUser *user = [PFUser currentUser];
         if (user) {
+//            NSLog(@"%f - %f", location.coordinate.latitude, location.coordinate.longitude);
             NSDictionary *locObject = @{@"latitude" : [NSNumber numberWithDouble:location.coordinate.latitude],
                                         @"longitude": [NSNumber numberWithDouble:location.coordinate.longitude],
                                         @"time" : [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]};

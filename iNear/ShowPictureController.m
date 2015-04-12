@@ -19,6 +19,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title = @"Image";
     _picture.image = [UIImage imageWithData:_message.attachment];
 }
 

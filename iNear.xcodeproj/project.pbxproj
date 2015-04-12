@@ -210,6 +210,7 @@
 		2CB7371C1AB181200033FB30 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		2CB7371E1AB181760033FB30 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../../../../../Users/sseitov/Documents/SDK/parse/Parse.framework; sourceTree = "<group>"; };
 		2CB737201AB182550033FB30 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../../../../Users/sseitov/Documents/SDK/parse/Bolts.framework; sourceTree = "<group>"; };
+		2CBC40B51ADA7A9F008495C2 /* TestLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TestLocation.gpx; sourceTree = "<group>"; };
 		2CBE1E4C1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPMessage+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.h"; sourceTree = "<group>"; };
 		2CBE1E4D1AAF66AD000D1E22 /* XMPPMessage+XEP_0172.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPMessage+XEP_0172.m"; path = "XMPPFramework/Extensions/XEP-0172/XMPPMessage+XEP_0172.m"; sourceTree = "<group>"; };
 		2CBE1E4E1AAF66AD000D1E22 /* XMPPPresence+XEP_0172.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPPresence+XEP_0172.h"; path = "XMPPFramework/Extensions/XEP-0172/XMPPPresence+XEP_0172.h"; sourceTree = "<group>"; };
@@ -571,6 +572,7 @@
 				2C27867C1AA8A28B00D7F014 /* Main.storyboard */,
 				2C27867F1AA8A28B00D7F014 /* Images.xcassets */,
 				2C2786811AA8A28B00D7F014 /* LaunchScreen.xib */,
+				2CBC40B51ADA7A9F008495C2 /* TestLocation.gpx */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
