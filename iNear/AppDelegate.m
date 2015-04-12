@@ -20,6 +20,8 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import <CoreLocation/CoreLocation.h>
 
+#include "ApiKeys.h"
+
 #define WAIT(a) [a lock]; [a wait]; [a unlock]
 #define SIGNAL(a) [a lock]; [a signal]; [a unlock]
 
@@ -72,8 +74,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
 {    
     [[Storage sharedInstance] saveContext];
     
-    [Parse setApplicationId:@"Azz7OQsCDOQNp1Fjw7JbzXRxg1qhOcnWgFxUzYty"
-                  clientKey:@"utsSMDqCgOy8IPgTIaL0OefzBtrz8ajMNRPtlSHL"];
+    [Parse setApplicationId:ParseApplicationId clientKey:ParseClientKey];
     
     // Register for Push Notitications
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
@@ -86,7 +87,7 @@ NSString* const XmppMessageNotification = @"XmppMessageNotification";
     [application registerForRemoteNotifications];
     
     
-    [GMSServices provideAPIKey:@"AIzaSyASkBVjFprQb3Mhalnl_rnGe14ewUlrrGA"];
+    [GMSServices provideAPIKey:GoolgleMapAPIKey];
     if ([CLLocationManager locationServicesEnabled])
     {
         _locationManager = [[CLLocationManager alloc] init];

@@ -1672,7 +1672,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
-					/Users/sseitov/Documents/SDK/parse,
 					"/Users/sseitov/Documents/SDK/GoogleMaps-iOS-1.9.2",
 					"$(PROJECT_DIR)",
 				);
@@ -1681,6 +1680,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SDKROOT)/usr/include/libxml2",
+					.,
 				);
 				INFOPLIST_FILE = iNear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1704,7 +1704,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
-					/Users/sseitov/Documents/SDK/parse,
 					"/Users/sseitov/Documents/SDK/GoogleMaps-iOS-1.9.2",
 					"$(PROJECT_DIR)",
 				);
@@ -1713,6 +1712,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SDKROOT)/usr/include/libxml2",
+					.,
 				);
 				INFOPLIST_FILE = iNear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
