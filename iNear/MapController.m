@@ -12,13 +12,9 @@
 
 @interface MapController () {
     GMSMapView *_mapView;
-    GMSMarker *_myPosition;
-    GMSMarker *_peerPosition;
 }
 
 @property (strong, nonatomic) UILabel* titleLabel;
-@property (strong, nonatomic) UILabel* geoInfo;
-@property (strong, nonatomic) UIBarButtonItem *infoItem;
 
 @end
 
@@ -70,71 +66,39 @@
     return newImage;
 }
 
-+ (NSString*)stringTime:(double)time
-{
-    NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    [format setTimeStyle:NSDateFormatterShortStyle];
-    [format setDateStyle:NSDateFormatterLongStyle];
-    return [format stringFromDate:[NSDate dateWithTimeIntervalSince1970:time]];
-}
-
-+ (UILabel*)createLabel
-{
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
-    label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    label.text = @"";
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor whiteColor];
-    label.numberOfLines = 0;
-    label.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    return label;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                            target:self
                                                                                            action:@selector(refresh)];
-    _titleLabel = [MapController createLabel];
+    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 600, 44)];
+    _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _titleLabel.text = @"";
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.textColor = [UIColor whiteColor];
+    _titleLabel.numberOfLines = 0;
+    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+
     self.navigationItem.titleView = _titleLabel;
     
-    _geoInfo = [MapController createLabel];
-    _infoItem = [[UIBarButtonItem alloc] initWithCustomView:_geoInfo];
-    self.toolbarItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-                          _infoItem,
-                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
-    NSDictionary *locObject = _user[@"location"];
-    if (locObject) {
-        double time = [[locObject objectForKey:@"time"] doubleValue];
-        _titleLabel.text = [MapController stringTime:time];
-
-        double latitude = [[locObject objectForKey:@"latitude"] doubleValue];
-        double longitude = [[locObject objectForKey:@"longitude"] doubleValue];
-
-        GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:latitude longitude:longitude zoom:16];
+    GMSMarker *peer = [self markerForUser:_user];
+    if (peer) {
+        GMSCameraPosition *camera = [GMSCameraPosition cameraWithTarget:peer.position zoom:16];
         _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
         _mapView.myLocationEnabled = NO;
         self.view = _mapView;
-
-        _peerPosition = [[GMSMarker alloc] init];
-        _peerPosition.position = CLLocationCoordinate2DMake(latitude, longitude);
-        _peerPosition.title = _user[@"displayName"];
-        UIImage* image = [UIImage imageWithData:_user[@"photo"]];
-        _peerPosition.icon = [MapController circularScaleAndCropImage:image frame:CGRectMake(0, 0, 60, 60)];
-        _peerPosition.map = _mapView;
     } else {
         _mapView = nil;
     }
 }
 
-- (void)viewDidLayoutSubviews
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLayoutSubviews];
-    _infoItem.width = self.view.frame.size.width;
+    [self.navigationController setToolbarHidden:YES animated:YES];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:NO animated:YES];
 }
@@ -160,58 +124,59 @@
     }
 }
 
+- (GMSMarker*)markerForUser:(PFUser*)user
+{
+    NSDictionary *locObject = user[@"location"];
+    if (locObject) {
+        GMSMarker *marker = [[GMSMarker alloc] init];
+        
+        double latitude = [[locObject objectForKey:@"latitude"] doubleValue];
+        double longitude = [[locObject objectForKey:@"longitude"] doubleValue];
+        double time = [[locObject objectForKey:@"time"] doubleValue];
+        
+        marker.position = CLLocationCoordinate2DMake(latitude, longitude);
+        marker.title = user[@"displayName"];
+        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+        [format setTimeStyle:NSDateFormatterShortStyle];
+        [format setDateStyle:NSDateFormatterLongStyle];
+        marker.snippet = [format stringFromDate:[NSDate dateWithTimeIntervalSince1970:time]];
+        
+        UIImage* image = [UIImage imageWithData:user[@"photo"]];
+        marker.icon = [MapController circularScaleAndCropImage:image frame:CGRectMake(0, 0, 60, 60)];
+        return marker;
+    } else {
+        return nil;
+    }
+}
+
 - (void)refresh
 {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [_user fetchInBackgroundWithBlock:^(PFObject* user, NSError* error) {
-        NSDictionary *locObject = user[@"location"];
-        if (locObject) {
+        GMSMarker *peer = [self markerForUser:(PFUser*)user];
+        if (peer) {
             [_mapView clear];
+            GMSMarker *myMarker = [self markerForUser:[PFUser currentUser]];
+            myMarker.map = _mapView;
+            peer.map = _mapView;
             
-            double time = [[locObject objectForKey:@"time"] doubleValue];
-            _titleLabel.text = [MapController stringTime:time];
-            _peerPosition.position = CLLocationCoordinate2DMake([[locObject objectForKey:@"latitude"] doubleValue],
-                                                                [[locObject objectForKey:@"longitude"] doubleValue]);
-            
-            NSDictionary *myLocation = [PFUser currentUser][@"location"];
-            _myPosition = [[GMSMarker alloc] init];
-            _myPosition.position = CLLocationCoordinate2DMake([[myLocation objectForKey:@"latitude"] doubleValue],
-                                                              [[myLocation objectForKey:@"longitude"] doubleValue]);
-            _myPosition.title = [PFUser currentUser][@"displayName"];
-            UIImage* image = [UIImage imageWithData:[PFUser currentUser][@"photo"]];
-            _myPosition.icon = [MapController circularScaleAndCropImage:image frame:CGRectMake(0, 0, 60, 60)];
-            
-            _peerPosition.map = _mapView;
-            _myPosition.map = _mapView;
-
-            GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:_peerPosition.position
-                                                                               coordinate:_myPosition.position];
-            GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:bounds withPadding:50.0f];
+            GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:myMarker.position coordinate:peer.position];
+            GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:bounds withPadding:100.];
             [_mapView moveCamera:update];
             
-            [self geocode:_peerPosition.position result:^(NSString *info) {
+            [[GMSGeocoder geocoder] reverseGeocodeCoordinate:peer.position completionHandler:^(GMSReverseGeocodeResponse *response, NSError *error)
+            {
                 [MBProgressHUD hideHUDForView:self.view animated:YES];
-                if (info) {
-                    _geoInfo.text = info;
+                GMSAddress *address = response.firstResult;
+                if (address) {
+                    _titleLabel.text = address.thoroughfare;
+                    [self createDirectionFrom:myMarker.position to:peer.position];
                 } else {
-                    _geoInfo.text = @"";
+                    _titleLabel.text = @"";
                 }
-                [self createDirectionFrom:_myPosition.position to:_peerPosition.position];
             }];
         } else {
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-        }
-    }];
-}
-
-- (void)geocode:(CLLocationCoordinate2D)location result:(void (^)(NSString* info))result
-{
-    [[GMSGeocoder geocoder] reverseGeocodeCoordinate:location completionHandler:^(GMSReverseGeocodeResponse *response, NSError *error) {
-        GMSAddress *address = response.firstResult;
-        if (address) {
-            result(address.thoroughfare);
-        } else {
-            result(nil);
         }
     }];
 }
