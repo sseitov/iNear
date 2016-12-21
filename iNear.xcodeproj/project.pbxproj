@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0CD0BD9FE756F4DD5D14EE8E /* libPods-iNear.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1F7B8E64D70D9606D0E766B /* libPods-iNear.a */; };
 		2C167E5B1AD8067700A48DEF /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4ED431AACE9E6000CE97B /* CFNetwork.framework */; };
 		2C2786751AA8A28B00D7F014 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2786741AA8A28B00D7F014 /* main.m */; };
 		2C2786781AA8A28B00D7F014 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2786771AA8A28B00D7F014 /* AppDelegate.m */; };
@@ -163,6 +164,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0AABC34CFDFDD4F173AFCB52 /* Pods-iNear.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNear.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iNear/Pods-iNear.debug.xcconfig"; sourceTree = "<group>"; };
 		2C27866F1AA8A28B00D7F014 /* iNear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iNear.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2786731AA8A28B00D7F014 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C2786741AA8A28B00D7F014 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -471,7 +473,9 @@
 		2CE4EE4C1AACF69E000CE97B /* XMPPDeprecatedPlainAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPDeprecatedPlainAuthentication.m; path = "XMPPFramework/Authentication/Deprecated-Plain/XMPPDeprecatedPlainAuthentication.m"; sourceTree = "<group>"; };
 		2CE4EE4E1AACF989000CE97B /* iNear_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iNear_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		4DEC298C94C212FBF0E1D2D7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D01ED935CFA23EAF4849C80 /* Pods-iNear.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNear.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNear/Pods-iNear.release.xcconfig"; sourceTree = "<group>"; };
 		A95945AC115A98B1D4C6AD57 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		C1F7B8E64D70D9606D0E766B /* libPods-iNear.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNear.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2ECDAAA8A2FE27367D5F0D9 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -501,6 +505,7 @@
 				2C2786A11AA8BB6200D7F014 /* UIKit.framework in Frameworks */,
 				2C27869F1AA8BB5400D7F014 /* Foundation.framework in Frameworks */,
 				E2ADADD6C62285BBFF3764BF /* libPods.a in Frameworks */,
+				0CD0BD9FE756F4DD5D14EE8E /* libPods-iNear.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,6 +517,8 @@
 			children = (
 				F2ECDAAA8A2FE27367D5F0D9 /* Pods.debug.xcconfig */,
 				A95945AC115A98B1D4C6AD57 /* Pods.release.xcconfig */,
+				0AABC34CFDFDD4F173AFCB52 /* Pods-iNear.debug.xcconfig */,
+				5D01ED935CFA23EAF4849C80 /* Pods-iNear.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -614,6 +621,7 @@
 				2C2786A01AA8BB6200D7F014 /* UIKit.framework */,
 				2C27869E1AA8BB5400D7F014 /* Foundation.framework */,
 				4DEC298C94C212FBF0E1D2D7 /* libPods.a */,
+				C1F7B8E64D70D9606D0E766B /* libPods-iNear.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1327,11 +1335,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2C2786921AA8A28B00D7F014 /* Build configuration list for PBXNativeTarget "iNear" */;
 			buildPhases = (
-				54B3059F2D09933BD9D59D8B /* Check Pods Manifest.lock */,
+				54B3059F2D09933BD9D59D8B /* [CP] Check Pods Manifest.lock */,
 				2C27866B1AA8A28B00D7F014 /* Sources */,
 				2C27866C1AA8A28B00D7F014 /* Frameworks */,
 				2C27866D1AA8A28B00D7F014 /* Resources */,
-				8BEF7EC16ED915A66EDB411E /* Copy Pods Resources */,
+				8BEF7EC16ED915A66EDB411E /* [CP] Copy Pods Resources */,
+				CFBF89F355149AE409368CCA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1391,34 +1400,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		54B3059F2D09933BD9D59D8B /* Check Pods Manifest.lock */ = {
+		54B3059F2D09933BD9D59D8B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		8BEF7EC16ED915A66EDB411E /* Copy Pods Resources */ = {
+		8BEF7EC16ED915A66EDB411E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNear/Pods-iNear-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CFBF89F355149AE409368CCA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNear/Pods-iNear-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1664,7 +1688,7 @@
 		};
 		2C2786931AA8A28B00D7F014 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F2ECDAAA8A2FE27367D5F0D9 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 0AABC34CFDFDD4F173AFCB52 /* Pods-iNear.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1696,7 +1720,7 @@
 		};
 		2C2786941AA8A28B00D7F014 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A95945AC115A98B1D4C6AD57 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 5D01ED935CFA23EAF4849C80 /* Pods-iNear.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
